@@ -607,7 +607,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
   <span class="badge-big" id="fBE">&#x1F3C6;</span>
   <div class="badge-n" id="fBN">Badge</div>
   <div class="badge-p" id="fBP"></div>
-  <div class="fxb"><div class="fxb-m"><span>0 XP</span><span id="fXT">0 / 1 675 XP</span></div><div class="fxb-t"><div class="fxb-f" id="fXF" style="width:0%;"></div></div></div>
+  <div class="fxb"><div class="fxb-m"><span>0 XP</span><span id="fXT">0 / 1 625 XP</span></div><div class="fxb-t"><div class="fxb-f" id="fXF" style="width:0%;"></div></div></div>
   <div class="f-total" id="fXTot">&#x26A1; 0 XP</div>
   <div style="font-size:.86em;color:var(--muted);margin-bottom:24px;font-style:italic;" id="fName"></div>
   <div class="f-cta">
@@ -617,7 +617,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
   </div>
   <div style="font-size:.78em;font-weight:700;color:var(--navy);margin-bottom:16px;">&#x1F517; Les outils que j'utilise moi-meme</div>
   <div class="pgrd">
-    <a class="pcard" href="https://bour.so/p/wCVguC53SFB" target="_blank" target="_blank"><span class="pem">&#x1F7E0;</span><div class="pnm">Boursorama</div><div class="pty">PEA &middot; CTO &middot; AV</div><div class="pav">Jusqu'a 130 &euro; offerts</div></a>
+    <a class="pcard" href="https://bour.so/p/2VvNuveypCM" target="_blank" target="_blank"><span class="pem">&#x1F7E0;</span><div class="pnm">Boursorama</div><div class="pty">PEA &middot; CTO &middot; AV</div><div class="pav">Jusqu'a 130 &euro; offerts</div></a>
     <a class="pcard" href="https://www.fortuneo.fr/compte-bancaire/souscrire/choix-type-compte" target="_blank" target="_blank"><span class="pem">&#x1F7E2;</span><div class="pnm">Fortuneo</div><div class="pty">PEA &middot; CTO</div><div class="pav">Jusqu'a 150 &euro; offerts</div></a>
     <a class="pcard" href="https://refnocode.trade.re/141g7wv2" target="_blank" target="_blank"><span class="pem">&#x1F534;</span><div class="pnm">Trade Republic</div><div class="pty">CTO &middot; Crypto</div><div class="pav">10 &euro; en actions</div></a>
     <a class="pcard" href="https://linxea.mention-me.com/m/ode/fa9se-e8564d2495" target="_blank" target="_blank"><span class="pem">&#x1F535;</span><div class="pnm">Linxea</div><div class="pty">AV &middot; PER</div><div class="pav">Frais reduits</div></a>
@@ -655,8 +655,8 @@ var PALLOC={
 var BADGES=[
   {min:0,max:1350,e:'🎰',n:'Le Joueur de PMU',p:'Tu as parcouru le chemin. Quelques reponses ratees, quelques simulateurs skipes. La prochaine fois, tu sauras.'},
   {min:1350,max:1475,e:'⚖️',n:'L\'Equilibre Serieux',p:'Tu commences a y voir clair. Warren Buffett peut dormir tranquille, mais toi aussi bientot.'},
-  {min:1475,max:1600,e:'🧠',n:'Le Stratege',p:'Tu as une vision. Tu connais ton profil, ton horizon, tes objectifs. Tu investis comme TOI.'},
-  {min:1600,max:9999,e:'🚀',n:'Le Slash\'Investor',p:'Tu as tout compris. Simple. Regulier. Long terme. Jeremy est fier de toi. 🤝'}
+  {min:1475,max:1575,e:'🧠',n:'Le Stratege',p:'Tu as une vision. Tu connais ton profil, ton horizon, tes objectifs. Tu investis comme TOI.'},
+  {min:1575,max:9999,e:'🚀',n:'Le Slash\'Investor',p:'Tu as tout compris. Simple. Regulier. Long terme. Jeremy est fier de toi. 🤝'}
 ];
 
 var ACT_LBLS=[
@@ -897,9 +897,9 @@ function showFinal(){
   document.getElementById('fBN').textContent=badge.n;
   document.getElementById('fBP').textContent=badge.p;
   document.getElementById('fName').textContent=name+' - '+xp+' XP';
-  document.getElementById('fXT').textContent=xp+' / 1 675 XP';
+  document.getElementById('fXT').textContent=xp+' / 1 625 XP';
   document.getElementById('fXTot').textContent='XP : '+xp;
-  setTimeout(function(){document.getElementById('fXF').style.width=Math.min(100,Math.round(xp/1675*100))+'%';},400);
+  setTimeout(function(){document.getElementById('fXF').style.width=Math.min(100,Math.round(xp/1625*100))+'%';},400);
   document.getElementById('shareHint').textContent='Badge "'+badge.n+'" sur Slash\'Invest avec '+xp+' XP !';
   document.getElementById('progFill').style.width='100%';
   document.getElementById('progPct').textContent='100%';
