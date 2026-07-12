@@ -1,16 +1,15 @@
-## Hi there 👋
+# Slash'Invest
 
-<!--
-**slashinvest/slashinvest** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+Site pédagogique sur l'investissement personnel.
 
-Here are some ideas to get you started:
+## Contenu
+- `index.html` — Page d'accueil (choix du mode)
+- `game.html` — Parcours gaming : 5 chapitres, quiz, XP et badges
+- `learn.html` — Navigation libre : 5 thèmes, simulateurs, parrainage
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+## Accès
+https://slashinvest.github.io/slashinvest/
+
+## Par Jérémy — Slash'Invest
+Conseiller financier indépendant.
+L'investissement accessible à tous. Simple. Régulier. Long terme.
