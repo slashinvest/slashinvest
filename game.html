@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slash'Invest — Parcours Gaming</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap');
+:root{
+  --navy:#0f2942;--navy2:#1a4a7a;--blue:#3b82f6;--blue2:#60a5fa;--blue-lt:#eff6ff;
+  --green:#10b981;--green-lt:#ecfdf5;--amber:#f59e0b;--red:#ef4444;--purple:#8b5cf6;
+  --teal:#0891b2;--bg:#f0f4f9;--card:#fff;--border:#e2e8f0;--text:#1a2332;--muted:#64748b;
+  --font:'Space Grotesk',sans-serif;--mono:'Space Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;}
+.game-header{position:sticky;top:0;z-index:200;background:white;border-bottom:1px solid var(--border);box-shadow:0 2px 12px rgba(0,0,0,.06);padding:0 20px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px;height:54px;}
+.gh-logo{font-family:var(--mono);font-size:.72em;font-weight:700;color:var(--navy);letter-spacing:1px;text-decoration:none;display:flex;align-items:center;gap:6px;}
+.gh-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.75)}}
+.gh-prog{display:flex;flex-direction:column;gap:3px;}
+.gp-meta{display:flex;justify-content:space-between;font-size:.6em;color:var(--muted);font-family:var(--mono);}
+.gp-track{height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
+.gp-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--blue),var(--green));transition:width .5s cubic-bezier(.4,0,.2,1);}
+.gh-xp{display:flex;align-items:center;gap:5px;background:var(--blue-lt);border:1px solid #bfdbfe;border-radius:20px;padding:4px 11px;font-family:var(--mono);font-size:.72em;font-weight:700;color:var(--blue);white-space:nowrap;}
+.xp-popup{position:fixed;top:66px;right:18px;z-index:300;background:white;border:2px solid var(--green);border-radius:12px;padding:9px 16px;font-family:var(--mono);font-weight:700;color:var(--green);font-size:.86em;display:flex;align-items:center;gap:7px;transform:translateY(-8px);opacity:0;transition:all .3s cubic-bezier(.4,0,.2,1);pointer-events:none;box-shadow:0 6px 20px rgba(16,185,129,.18);}
+.xp-popup.show{transform:translateY(0);opacity:1;}
+.ch-map{background:linear-gradient(135deg,var(--navy),var(--navy2));padding:14px 20px;display:flex;align-items:center;justify-content:center;gap:0;overflow-x:auto;}
+.cm-item{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:72px;position:relative;}
+.cm-item:not(:last-child)::after{content:'';position:absolute;top:13px;left:55%;width:90%;height:2px;background:rgba(255,255,255,.12);}
+.cm-item.done:not(:last-child)::after{background:var(--green);}
+.cm-circle{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.68em;font-weight:700;font-family:var(--mono);border:2px solid rgba(255,255,255,.18);color:rgba(255,255,255,.35);background:rgba(255,255,255,.05);transition:all .3s;position:relative;z-index:1;}
+.cm-item.done .cm-circle{background:var(--green);border-color:var(--green);color:white;}
+.cm-item.active .cm-circle{background:var(--blue);border-color:var(--blue);color:white;box-shadow:0 0 0 4px rgba(59,130,246,.25);}
+.cm-label{font-size:.55em;color:rgba(255,255,255,.35);text-align:center;line-height:1.2;}
+.cm-item.active .cm-label{color:var(--blue2);}
+.cm-item.done .cm-label{color:rgba(255,255,255,.55);}
+.acts-nav{display:flex;justify-content:center;gap:7px;padding:16px 16px 0;flex-wrap:wrap;}
+.an-btn{padding:5px 13px;border-radius:20px;border:1.5px solid var(--border);background:white;font-size:.7em;font-weight:600;color:var(--muted);cursor:pointer;font-family:var(--font);transition:all .18s;}
+.an-btn.active{background:var(--blue);border-color:var(--blue);color:white;}
+.an-btn.done{background:var(--green-lt);border-color:#a7f3d0;color:#059669;}
+.container{max-width:760px;margin:0 auto;padding:24px 18px 80px;}
+.ch-block{display:none;}
+.ch-block.active{display:block;}
+.act-block{display:none;}
+.act-block.active{display:block;animation:stepIn .3s ease forwards;}
+@keyframes stepIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+.step-intro{display:flex;align-items:flex-start;gap:14px;margin-bottom:20px;padding:18px 20px;background:white;border-radius:14px;border:1px solid var(--border);border-left:4px solid var(--blue);}
+.step-num{font-family:var(--mono);font-size:1.6em;font-weight:700;color:rgba(59,130,246,.2);flex-shrink:0;line-height:1;}
+.step-title{font-size:1.1em;font-weight:800;color:var(--navy);margin-bottom:3px;}
+.step-desc{font-size:.8em;color:var(--muted);line-height:1.6;}
+.tline{font-size:.78em;font-style:italic;font-weight:600;margin-top:18px;padding:12px 16px;border-radius:10px;}
+.tl-g{background:var(--green-lt);border:1px solid #a7f3d0;color:#065f46;}
+.tl-b{background:var(--blue-lt);border:1px solid #bfdbfe;color:#1d4ed8;}
+.tl-a{background:#fffbeb;border:1px solid #fde68a;color:#92400e;}
+.tl-p{background:#f5f3ff;border:1px solid #ddd6fe;color:#5b21b6;}
+.tl-r{background:#fef2f2;border:1px solid #fca5a5;color:#991b1b;}
+.card{background:white;border:1px solid var(--border);border-radius:16px;padding:20px 22px;margin-bottom:16px;position:relative;overflow:hidden;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue),var(--purple),var(--green));opacity:.35;}
+.ctitle{font-size:.92em;font-weight:700;color:var(--navy);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.csub{font-size:.78em;color:var(--muted);margin-bottom:12px;line-height:1.6;}
+.lecon{background:linear-gradient(135deg,#eff6ff,#f0fdf4);border:1px solid #bfdbfe;border-radius:11px;padding:13px 15px;margin-top:12px;}
+.lecon-l{font-size:.6em;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--blue);margin-bottom:4px;}
+.lecon-t{font-size:.82em;color:var(--navy);line-height:1.65;font-weight:500;}
+.alert{border-radius:9px;padding:11px 14px;font-size:.8em;line-height:1.6;margin-top:10px;}
+.al-b{background:var(--blue-lt);border:1px solid #bfdbfe;color:#1d4ed8;}
+.al-g{background:var(--green-lt);border:1px solid #a7f3d0;color:#065f46;}
+.al-a{background:#fffbeb;border:1px solid #fde68a;color:#92400e;}
+.demo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:12px;}
+@media(max-width:520px){.demo-grid{grid-template-columns:1fr 1fr;}}
+.di{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px 8px;text-align:center;}
+.dy{font-size:.56em;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;font-family:var(--mono);}
+.dv{font-size:1.2em;font-weight:700;}
+.dn{font-size:.6em;color:var(--muted);margin-top:2px;}
+.duel{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+@media(max-width:500px){.duel{grid-template-columns:1fr;}}
+.dc{border-radius:12px;padding:16px 14px;border:1px solid var(--border);}
+.dc.win{background:#f0fdf4;border-color:#a7f3d0;}
+.dc.lose{background:#fef2f2;border-color:#fca5a5;}
+.dtag{font-size:.58em;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+.win .dtag{color:var(--green);}.lose .dtag{color:var(--red);}
+.dname{font-size:.82em;font-weight:700;color:var(--navy);margin-bottom:7px;}
+.ddet{font-size:.74em;color:var(--muted);line-height:1.8;}
+.dres{font-size:1.4em;font-weight:800;margin-top:8px;}
+.win .dres{color:var(--green);}.lose .dres{color:var(--red);}
+.dnote{font-size:.6em;color:var(--muted);margin-top:1px;}
+.compo-list{display:flex;flex-direction:column;gap:9px;}
+.compo-row{display:flex;align-items:center;gap:10px;}
+.compo-lbl{font-size:.7em;color:var(--muted);width:86px;flex-shrink:0;text-align:right;font-family:var(--mono);}
+.compo-track{flex:1;height:24px;background:var(--bg);border-radius:6px;overflow:hidden;border:1px solid var(--border);}
+.compo-fill{height:100%;border-radius:6px;display:flex;align-items:center;padding-left:8px;font-size:.68em;font-weight:700;color:white;width:0;transition:width 1.2s cubic-bezier(.4,0,.2,1);}
+.compo-end{font-size:.78em;font-weight:700;width:66px;flex-shrink:0;}
+.bgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
+@media(max-width:480px){.bgrid{grid-template-columns:1fr;}}
+.bc{border-radius:11px;padding:14px 11px;text-align:center;border:1px solid var(--border);background:var(--bg);}
+.bpct{font-size:1.6em;font-weight:800;margin-bottom:3px;}
+.blbl{font-size:.78em;font-weight:700;color:var(--navy);margin-bottom:4px;}
+.bex{font-size:.65em;color:var(--muted);line-height:1.5;}
+.fgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+@media(max-width:480px){.fgrid{grid-template-columns:1fr 1fr;}}
+.fi{background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:11px 7px;text-align:center;}
+.fe{font-size:1.2em;margin-bottom:3px;}
+.fl{font-size:.7em;font-weight:700;color:var(--navy);margin-bottom:2px;}
+.fd{font-size:.62em;color:var(--muted);line-height:1.3;}
+.env-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:12px;}
+@media(max-width:480px){.env-grid{grid-template-columns:1fr;}}
+.env-c{border-radius:11px;padding:15px 13px;border:1px solid var(--border);background:var(--bg);}
+.env-n{font-size:.86em;font-weight:800;color:var(--navy);margin-bottom:4px;}
+.env-d{font-size:.74em;color:var(--muted);line-height:1.6;margin-bottom:6px;}
+.env-p{font-size:.7em;color:var(--green);font-weight:600;}
+.env-m{font-size:.7em;color:var(--amber);font-weight:600;}
+.pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:12px;}
+@media(max-width:540px){.pgrid{grid-template-columns:1fr 1fr;}}
+.pc{border-radius:11px;padding:14px 10px;border:1px solid var(--border);text-align:center;background:var(--bg);cursor:pointer;transition:all .2s;}
+.pc:hover{transform:translateY(-2px);box-shadow:0 5px 14px rgba(0,0,0,.08);}
+.pc.sel{border-color:var(--blue);background:var(--blue-lt);box-shadow:0 0 0 3px rgba(59,130,246,.12);}
+.pi{font-size:1.6em;margin-bottom:4px;}
+.pn{font-size:.78em;font-weight:800;color:var(--navy);margin-bottom:2px;}
+.ps{font-size:.62em;color:var(--muted);line-height:1.3;}
+.abox{background:var(--bg);border:1px solid var(--border);border-radius:11px;padding:14px 16px;margin-top:12px;display:none;}
+.abox.show{display:block;}
+.atitle{font-size:.76em;font-weight:700;color:var(--navy);margin-bottom:10px;}
+.arow{display:flex;align-items:center;gap:9px;margin-bottom:7px;}
+.albl{font-size:.7em;color:var(--muted);width:78px;flex-shrink:0;}
+.atrack{flex:1;height:12px;background:white;border-radius:4px;overflow:hidden;border:1px solid var(--border);}
+.afill{height:100%;border-radius:4px;transition:width .6s cubic-bezier(.4,0,.2,1);}
+.apct{font-size:.68em;font-weight:700;width:30px;text-align:right;flex-shrink:0;}
+.hbtns{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px;}
+.hb{padding:6px 13px;border-radius:20px;border:1.5px solid var(--border);background:white;font-size:.72em;font-weight:600;color:var(--muted);cursor:pointer;font-family:var(--font);transition:all .18s;}
+.hb.active{background:var(--blue);border-color:var(--blue);color:white;}
+.sim-box{background:linear-gradient(135deg,#eff6ff,#f0fdf4);border:1.5px solid #bfdbfe;border-radius:13px;padding:18px 20px;margin-top:2px;}
+.sim-inp{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px;}
+@media(max-width:480px){.sim-inp{grid-template-columns:1fr;}}
+.sf{display:flex;flex-direction:column;gap:4px;}
+.sl{font-size:.62em;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;}
+.si{background:white;border:1.5px solid var(--border);border-radius:7px;padding:7px 10px;font-size:.86em;font-family:var(--font);color:var(--navy);outline:none;transition:border-color .15s;}
+.si:focus{border-color:var(--blue);}
+.sim-res{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+.sk{text-align:center;padding:10px;background:white;border-radius:9px;border:1px solid var(--border);}
+.skv{font-size:1.1em;font-weight:800;color:var(--navy);}
+.skl{font-size:.58em;color:var(--muted);margin-top:2px;}
+.sch{height:150px;}
+.sxbtn{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;padding:9px;border-radius:9px;border:none;background:linear-gradient(135deg,var(--blue),var(--purple));color:white;font-family:var(--font);font-size:.82em;font-weight:700;cursor:pointer;transition:all .2s;margin-top:12px;}
+.sxbtn:hover{transform:translateY(-1px);box-shadow:0 5px 16px rgba(59,130,246,.3);}
+.sxbtn.used{background:var(--green);pointer-events:none;}
+.qdots{display:flex;gap:6px;margin-bottom:16px;}
+.qd{height:4px;flex:1;border-radius:3px;background:var(--border);transition:background .3s;}
+.qd.active{background:var(--blue);}.qd.done{background:var(--green);}
+.qq{font-size:.9em;font-weight:700;color:var(--navy);margin-bottom:12px;line-height:1.5;}
+.qopts{display:flex;flex-direction:column;gap:7px;margin-bottom:8px;}
+.qopt{display:flex;align-items:center;gap:9px;background:var(--bg);border:1.5px solid var(--border);border-radius:9px;padding:11px 13px;cursor:pointer;transition:all .18s;font-size:.84em;color:var(--text);font-family:var(--font);text-align:left;}
+.qopt:hover{border-color:var(--blue);background:#f0f5ff;}
+.qopt.correct{border-color:var(--green);background:var(--green-lt);color:#065f46;font-weight:600;}
+.qopt.wrong{border-color:var(--red);background:#fef2f2;color:#991b1b;}
+.qopt.disabled{pointer-events:none;}
+.qltr{width:24px;height:24px;border-radius:6px;background:white;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.65em;font-weight:700;font-family:var(--mono);flex-shrink:0;}
+.qfb{border-radius:9px;padding:11px 14px;font-size:.78em;line-height:1.55;display:none;margin-top:7px;}
+.qfb.show{display:block;}
+.qfb.good{background:var(--green-lt);border:1px solid #a7f3d0;color:#065f46;}
+.qfb.bad{background:#fef2f2;border:1px solid #fca5a5;color:#991b1b;}
+.qsep{height:1px;background:var(--border);margin:16px 0;display:none;}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.scitem{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg);cursor:pointer;user-select:none;transition:all .18s;}
+.scitem:hover{border-color:#bfdbfe;background:#f0f5ff;}
+.scitem.checked{background:var(--green-lt);border-color:#a7f3d0;}
+.scbox{width:16px;height:16px;border-radius:4px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.6em;font-weight:700;flex-shrink:0;background:white;transition:all .15s;margin-top:1px;}
+.scitem.checked .scbox{background:var(--green);border-color:var(--green);color:white;}
+.sctext{font-size:.76em;color:var(--text);line-height:1.35;}
+.score-disp{display:flex;align-items:center;gap:14px;margin-bottom:16px;flex-wrap:wrap;}
+.score-nb{background:var(--bg);border:2px solid var(--border);border-radius:10px;padding:8px 16px;text-align:center;min-width:90px;transition:all .3s;}
+.score-n{font-size:1.6em;font-weight:800;color:var(--navy);line-height:1;}
+.score-s{font-size:.58em;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-top:2px;}
+.score-bw{flex:1;min-width:140px;}
+.score-bg{height:8px;background:var(--border);border-radius:5px;overflow:hidden;margin-bottom:5px;}
+.score-bf{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--blue),var(--green));transition:width .4s;}
+.score-v{font-size:.76em;font-weight:700;color:var(--navy);}
+.scat{font-size:.62em;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin:14px 0 8px;}
+.scfb{border-radius:9px;padding:11px 14px;font-size:.8em;font-weight:600;margin-top:12px;display:none;line-height:1.5;}
+.scfb.show{display:block;}
+.fb-low{background:#fef2f2;border:1px solid #fca5a5;color:#991b1b;}
+.fb-mid{background:#fffbeb;border:1px solid #fde68a;color:#92400e;}
+.fb-g{background:var(--green-lt);border:1px solid #a7f3d0;color:#065f46;}
+.fb-t{background:var(--blue-lt);border:1px solid #bfdbfe;color:#1d4ed8;}
+.step-actions{display:flex;justify-content:space-between;align-items:center;margin-top:22px;gap:10px;}
+.btn{border:none;border-radius:9px;padding:10px 20px;font-family:var(--font);font-size:.84em;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px;}
+.btn-n{background:linear-gradient(135deg,var(--blue),var(--purple));color:white;}
+.btn-n:hover{transform:translateY(-2px);box-shadow:0 5px 18px rgba(59,130,246,.3);}
+.btn-p{background:white;border:1.5px solid var(--border);color:var(--muted);}
+.btn-p:hover{border-color:var(--blue);color:var(--blue);}
+.btn.disabled,.btn:disabled{opacity:.35;pointer-events:none;}
+.xpt{font-size:.68em;opacity:.75;}
+.ch-comp{text-align:center;padding:36px 20px;}
+.ch-comp-icon{font-size:3.5em;margin-bottom:12px;display:block;animation:bounce 1.2s ease-in-out infinite alternate;}
+@keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-10px)}}
+.ch-comp h2{font-size:1.5em;font-weight:800;color:var(--navy);margin-bottom:5px;}
+.ch-comp-sub{color:var(--muted);margin-bottom:18px;font-size:.86em;line-height:1.6;}
+.ch-comp-xp{display:inline-flex;align-items:center;gap:7px;background:var(--blue-lt);border:1px solid #bfdbfe;border-radius:20px;padding:7px 20px;margin-bottom:20px;font-family:var(--mono);font-weight:700;color:var(--blue);font-size:.95em;}
+.btn-nch{background:linear-gradient(135deg,var(--blue),var(--purple));color:white;border:none;border-radius:11px;padding:12px 26px;font-size:.95em;font-weight:700;font-family:var(--font);cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:7px;}
+.btn-nch:hover{transform:translateY(-2px);box-shadow:0 8px 26px rgba(59,130,246,.3);}
+.final-screen{text-align:center;padding:50px 20px;}
+.badge-big{font-size:5em;margin-bottom:10px;display:block;animation:badgePop .6s cubic-bezier(.4,0,.2,1);}
+@keyframes badgePop{from{transform:scale(0);opacity:0}60%{transform:scale(1.2)}to{transform:scale(1);opacity:1}}
+.badge-n{font-size:1.7em;font-weight:800;color:var(--navy);margin-bottom:4px;}
+.badge-p{font-size:.86em;color:var(--muted);margin-bottom:6px;line-height:1.6;max-width:420px;margin-left:auto;margin-right:auto;white-space:pre-line;}
+.fxb{max-width:400px;margin:18px auto;}
+.fxb-m{display:flex;justify-content:space-between;font-size:.7em;color:var(--muted);font-family:var(--mono);margin-bottom:5px;}
+.fxb-t{height:10px;background:var(--border);border-radius:6px;overflow:hidden;}
+.fxb-f{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--blue),var(--green));transition:width 1.5s cubic-bezier(.4,0,.2,1);}
+.f-total{font-family:var(--mono);font-size:1.2em;font-weight:700;color:var(--blue);margin:10px 0 24px;}
+.f-cta{display:flex;flex-direction:column;gap:12px;align-items:center;margin-bottom:28px;}
+.f-btn{display:flex;align-items:center;gap:9px;padding:14px 26px;border-radius:12px;font-family:var(--font);font-size:.92em;font-weight:700;cursor:pointer;text-decoration:none;transition:all .2s;border:none;width:100%;max-width:380px;justify-content:center;}
+.f-btn.p{background:linear-gradient(135deg,var(--navy),var(--blue));color:white;}
+.f-btn.p:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(59,130,246,.3);}
+.f-btn.s{background:var(--green);color:white;}
+.f-btn.s:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(16,185,129,.3);}
+.f-btn.t{background:white;border:1.5px solid var(--border);color:var(--navy);}
+.f-btn.t:hover{border-color:var(--blue);color:var(--blue);}
+.pgrd{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;}
+@media(max-width:540px){.pgrd{grid-template-columns:1fr 1fr;}}
+.pcard{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:14px 11px;text-align:center;text-decoration:none;color:inherit;transition:all .2s;display:block;}
+.pcard:hover{transform:translateY(-3px);box-shadow:0 6px 18px rgba(0,0,0,.08);border-color:rgba(59,130,246,.3);}
+.pem{font-size:1.8em;margin-bottom:5px;display:block;}
+.pnm{font-size:.8em;font-weight:800;color:var(--navy);margin-bottom:2px;}
+.pty{font-size:.64em;color:var(--muted);margin-bottom:6px;}
+.pav{font-size:.68em;font-weight:700;color:var(--green);background:var(--green-lt);border-radius:5px;padding:3px 7px;display:inline-block;}
+</style>
+</head>
+<body>
+<div class="xp-popup" id="xpPopup">&#x26A1; +<span id="xpAmt">0</span> XP</div>
+<div class="game-header">
+  <a href="index.html" class="gh-logo"><div class="gh-dot"></div>SLASH'INVEST</a>
+  <div class="gh-prog"><div class="gp-meta"><span id="progLabel">Ch.1 Acte 1</span><span id="progPct">0%</span></div><div class="gp-track"><div class="gp-fill" id="progFill"></div></div></div>
+  <div class="gh-xp">&#x26A1; <span id="xpTotal">0</span> XP</div>
+</div>
+<div class="ch-map">
+  <div class="cm-item active" id="cm-0"><div class="cm-circle">1</div><div class="cm-label">Pourquoi<br>investir</div></div>
+  <div class="cm-item" id="cm-1"><div class="cm-circle">2</div><div class="cm-label">O&ugrave;<br>investir</div></div>
+  <div class="cm-item" id="cm-2"><div class="cm-circle">3</div><div class="cm-label">Strat&eacute;gie</div></div>
+  <div class="cm-item" id="cm-3"><div class="cm-circle">4</div><div class="cm-label">&Agrave; l'action</div></div>
+  <div class="cm-item" id="cm-4"><div class="cm-circle">5</div><div class="cm-label">Suivre</div></div>
+</div>
+<div class="acts-nav" id="actsNav"></div>
+<div class="container" id="mainCont">
+
+<!-- CH1 -->
+<div class="ch-block active" id="ch-0">
+<div class="act-block active" id="ch0-a0">
+  <div class="step-intro"><div class="step-num">01</div><div><div class="step-title">L'ennemi invisible : l'inflation</div><div class="step-desc">Ton argent perd de la valeur en ce moment meme &mdash; meme quand tu l'epargnes sagement.</div></div></div>
+  <div class="card">
+    <div class="ctitle">&#x1F4C9; 10 000 &euro; sur livret 2% face a inflation 2,5%</div>
+    <div class="demo-grid">
+      <div class="di"><div class="dy">Aujourd'hui</div><div class="dv" style="color:var(--blue);">10 000 &euro;</div><div class="dn">valeur reelle</div></div>
+      <div class="di"><div class="dy">Dans 10 ans</div><div class="dv" style="color:var(--muted);">9 520 &euro;</div><div class="dn">pouvoir d'achat</div></div>
+      <div class="di"><div class="dy">Dans 20 ans</div><div class="dv" style="color:var(--amber);">9 060 &euro;</div><div class="dn">pouvoir d'achat</div></div>
+      <div class="di"><div class="dy">Dans 30 ans</div><div class="dv" style="color:var(--red);">8 620 &euro;</div><div class="dn">pouvoir d'achat</div></div>
+    </div>
+    <div class="alert al-b">&#x1F4A1; 0,5% d'ecart = &minus;14% de pouvoir d'achat sur 30 ans.</div>
+    <div class="lecon"><div class="lecon-l">&#x1F511; La lecon</div><div class="lecon-t">Ne rien faire est un choix &mdash; souvent le pire. <strong>Epargner ne suffit pas. Il faut investir.</strong></div></div>
+  </div>
+  <div class="tline tl-g">&#x2726; Tu sais pourquoi l'inaction coute cher. Mais combien coute vraiment l'attente ? Rencontre Sarah et Thomas &rarr;</div>
+  <div class="step-actions"><button class="btn btn-p disabled">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(0,0,50)">Acte suivant <span class="xpt">+50 XP</span> &rarr;</button></div>
+</div>
+<div class="act-block" id="ch0-a1">
+  <div class="step-intro"><div class="step-num">02</div><div><div class="step-title">Le temps est ta seule vraie richesse</div><div class="step-desc">Deux personnes, meme effort mensuel, resultats radicalement differents. La seule variable : quand elles ont commence.</div></div></div>
+  <div class="card">
+    <div class="ctitle">&#x23F3; Sarah vs Thomas &mdash; Le duel</div>
+    <div class="duel">
+      <div class="dc win"><div class="dtag">&#x2705; Sarah &mdash; demarre tot</div><div class="dname">Investit 10 ans, puis s'arrete</div><div class="ddet">Commence a <strong>25 ans</strong><br>100 &euro;/mois pendant <strong>10 ans</strong><br>S'arrete a 35 ans<br>Total verse : <strong>12 000 &euro;</strong></div><div class="dres">~175 000 &euro;</div><div class="dnote">a 65 ans &middot; 8%/an</div></div>
+      <div class="dc lose"><div class="dtag">&#x26A0;&#xFE0F; Thomas &mdash; demarre tard</div><div class="dname">Investit 30 ans sans s'arreter</div><div class="ddet">Commence a <strong>35 ans</strong><br>100 &euro;/mois pendant <strong>30 ans</strong><br>Total verse : <strong>36 000 &euro;</strong></div><div class="dres">~150 000 &euro;</div><div class="dnote">a 65 ans &middot; 8%/an</div></div>
+    </div>
+    <div class="alert al-g">&#x1F3C6; Sarah verse 3x moins et finit avec plus d'argent. Chaque annee perdue ne se rattrape pas.</div>
+    <div class="lecon"><div class="lecon-l">&#x1F511; La lecon</div><div class="lecon-t"><strong>Commencer aujourd'hui avec 50 &euro; vaut mieux qu'attendre d'avoir 200 &euro;.</strong></div></div>
+  </div>
+  <div class="tline tl-p">&#x2726; Mais comment 100 &euro;/mois deviennent 175 000 &euro; ? La reponse tient en deux mots &rarr;</div>
+  <div class="step-actions"><button class="btn btn-p" onclick="gA(0,0)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(0,1,50)">Acte suivant <span class="xpt">+50 XP</span> &rarr;</button></div>
+</div>
+<div class="act-block" id="ch0-a2">
+  <div class="step-intro"><div class="step-num">03</div><div><div class="step-title">La magie des interets composes</div><div class="step-desc">100 &euro;/mois pendant 30 ans. Ce qui change tout ? Le rendement.</div></div></div>
+  <div class="card">
+    <div class="ctitle">&#x2728; Le meme effort, des resultats radicalement differents</div>
+    <div class="csub">Somme versee dans tous les cas : <strong>36 000 &euro;</strong></div>
+    <div class="compo-list" id="cbars0">
+      <div class="compo-row"><div class="compo-lbl">Livret 2%</div><div class="compo-track"><div class="compo-fill" data-w="22" style="background:#94a3b8;">49k&euro;</div></div><div class="compo-end" style="color:var(--muted);">49 000 &euro;</div></div>
+      <div class="compo-row"><div class="compo-lbl">Support 5%</div><div class="compo-track"><div class="compo-fill" data-w="37" style="background:var(--teal);">83k&euro;</div></div><div class="compo-end" style="color:var(--teal);">83 000 &euro;</div></div>
+      <div class="compo-row"><div class="compo-lbl">Support 7%</div><div class="compo-track"><div class="compo-fill" data-w="54" style="background:var(--blue);">121k&euro;</div></div><div class="compo-end" style="color:var(--blue);">121 000 &euro;</div></div>
+      <div class="compo-row"><div class="compo-lbl">Support 10%</div><div class="compo-track"><div class="compo-fill" data-w="100" style="background:var(--green);">226k&euro;</div></div><div class="compo-end" style="color:var(--green);">226 000 &euro;</div></div>
+    </div>
+    <div class="lecon"><div class="lecon-l">&#x1F511; La lecon</div><div class="lecon-t"><strong>Le rendement c'est le moteur. Le temps c'est le carburant.</strong> Les deux ensemble creent l'exponentiel.</div></div>
+  </div>
+  <div class="card" style="border-color:#bfdbfe;">
+    <div class="ctitle">&#x1F9EE; Simulateur &mdash; Et pour toi ?</div>
+    <div class="sim-box">
+      <div class="sim-inp"><div class="sf"><div class="sl">Versement mensuel</div><input type="number" class="si" id="s0m" value="200" oninput="cS0()"></div><div class="sf"><div class="sl">Rendement %/an</div><input type="number" class="si" id="s0r" value="7" step="0.5" oninput="cS0()"></div><div class="sf"><div class="sl">Duree (annees)</div><input type="number" class="si" id="s0d" value="20" oninput="cS0()"></div></div>
+      <div class="sim-res"><div class="sk"><div class="skv" id="s0v">—</div><div class="skl">Verse total</div></div><div class="sk"><div class="skv" id="s0g" style="color:var(--green);">—</div><div class="skl">Interets</div></div><div class="sk"><div class="skv" id="s0t" style="color:var(--blue);">—</div><div class="skl">Capital final</div></div></div>
+      <div class="sch"><canvas id="cs0"></canvas></div>
+      <button class="sxbtn" id="sb0" onclick="uS('sb0',0)">&#x26A1; Valider ma simulation (+25 XP bonus)</button>
+    </div>
+  </div>
+  <div class="tline tl-a">&#x2726; Tu vois le potentiel. Maintenant : combien peux-tu vraiment investir ? &rarr;</div>
+  <div class="step-actions"><button class="btn btn-p" onclick="gA(0,1)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(0,2,50)">Acte suivant <span class="xpt">+50 XP</span> &rarr;</button></div>
+</div>
+<div class="act-block" id="ch0-a3">
+  <div class="step-intro"><div class="step-num">04</div><div><div class="step-title">Ton budget avant tout</div><div class="step-desc">Avant d'investir le premier euro : connaitre ses chiffres. Sans ca, aucune strategie ne tient.</div></div></div>
+  <div class="card">
+    <div class="ctitle">&#x1F4B0; La regle 50 / 30 / 20</div>
+    <div class="bgrid">
+      <div class="bc"><div class="bpct" style="color:var(--blue);">50%</div><div class="blbl">Depenses fixes</div><div class="bex">Loyer &middot; charges &middot; credit &middot; assurances</div></div>
+      <div class="bc"><div class="bpct" style="color:var(--amber);">30%</div><div class="blbl">Depenses variables</div><div class="bex">Loisirs &middot; restos &middot; vetements &middot; voyages</div></div>
+      <div class="bc"><div class="bpct" style="color:var(--green);">20%</div><div class="blbl">Epargne &amp; invest.</div><div class="bex">Matelas de securite puis investissements</div></div>
+    </div>
+    <div class="ctitle" style="font-size:.82em;margin-bottom:8px;">&#x1F50D; Les fuites a identifier</div>
+    <div class="fgrid">
+      <div class="fi"><div class="fe">&#x1F4FA;</div><div class="fl">Abonnements</div><div class="fd">50&ndash;100&euro;/mois sans y penser</div></div>
+      <div class="fi"><div class="fe">&#x1F355;</div><div class="fl">Restos &amp; livraisons</div><div class="fd">Le poste qui explose</div></div>
+      <div class="fi"><div class="fe">&#x1F697;</div><div class="fl">Voiture</div><div class="fd">Souvent 30&ndash;40% du budget</div></div>
+      <div class="fi"><div class="fe">&#x1F6D2;</div><div class="fl">Achats impulsifs</div><div class="fd">Cafe, snacks, online</div></div>
+      <div class="fi"><div class="fe">&#x1F4F1;</div><div class="fl">Forfaits</div><div class="fd">Renegociable facilement</div></div>
+      <div class="fi"><div class="fe">&#x1F3E6;</div><div class="fl">Frais bancaires</div><div class="fd">Discrets mais reguliers</div></div>
+    </div>
+    <div class="lecon"><div class="lecon-l">&#x1F511; La lecon</div><div class="lecon-t">Avant d'investir : <strong>3 a 6 mois de depenses sur livret accessible</strong>. C'est ta base. Pas ton investissement.</div></div>
+  </div>
+  <div class="tline tl-b">&#x2726; Tu as les bases. Valide tes acquis avec le quiz &rarr;</div>
+  <div class="step-actions"><button class="btn btn-p" onclick="gA(0,2)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(0,3,50)">Quiz <span class="xpt">+50 XP</span> &rarr;</button></div>
+</div>
+<div class="act-block" id="ch0-quiz">
+  <div class="step-intro"><div class="step-num">05</div><div><div class="step-title">Quiz &mdash; Chapitre 1</div><div class="step-desc">3 questions. Bonne reponse = +25 XP.</div></div></div>
+  <div class="card">
+    <div class="qdots"><div class="qd active" id="qd-0-0"></div><div class="qd" id="qd-0-1"></div><div class="qd" id="qd-0-2"></div></div>
+    <div id="qb-0-0"><div class="qq">&#x2753; Que se passe-t-il avec 10 000 &euro; sur livret 2% face a inflation 2,5% ?</div><div class="qopts"><div class="qopt" onclick="qa(this,'correct','0-0')"><div class="qltr">A</div>Le pouvoir d'achat reel diminue</div><div class="qopt" onclick="qa(this,'wrong','0-0')"><div class="qltr">B</div>Le pouvoir d'achat augmente</div><div class="qopt" onclick="qa(this,'wrong','0-0')"><div class="qltr">C</div>Rien ne change</div></div><div class="qfb good" id="qfg-0-0">&#x2705; Exact ! 0,5% d'ecart = &minus;14% de pouvoir d'achat sur 30 ans.</div><div class="qfb bad" id="qfb-0-0">&#x274C; L'inflation (2,5%) depasse le rendement (2%). Ton argent perd de la valeur reelle.</div></div>
+    <div class="qsep" id="qs-0-1"></div><div id="qb-0-1" style="display:none;opacity:0;transition:opacity .4s;"><div class="qq">&#x2753; Sarah investit 100 &euro;/mois de 25 a 35 ans puis arrete. Thomas investit 100 &euro;/mois de 35 a 65 ans. Qui a le plus a 65 ans ?</div><div class="qopts"><div class="qopt" onclick="qa(this,'wrong','0-1')"><div class="qltr">A</div>Thomas &mdash; il a investi 3x plus longtemps</div><div class="qopt" onclick="qa(this,'correct','0-1')"><div class="qltr">B</div>Sarah &mdash; elle a commence 10 ans plus tot</div><div class="qopt" onclick="qa(this,'wrong','0-1')"><div class="qltr">C</div>Ils ont le meme capital</div></div><div class="qfb good" id="qfg-0-1">&#x2705; Sarah (~175 000 &euro;) devance Thomas (~150 000 &euro;) avec 3x moins verse.</div><div class="qfb bad" id="qfb-0-1">&#x274C; C'est Sarah ! 12 000 &euro; vs 36 000 &euro; &mdash; mais commencer 10 ans plus tot fait toute la difference.</div></div>
+    <div class="qsep" id="qs-0-2"></div><div id="qb-0-2" style="display:none;opacity:0;transition:opacity .4s;"><div class="qq">&#x2753; Combien de mois de depenses faut-il en epargne de precaution avant d'investir ?</div><div class="qopts"><div class="qopt" onclick="qa(this,'wrong','0-2')"><div class="qltr">A</div>1 mois</div><div class="qopt" onclick="qa(this,'correct','0-2')"><div class="qltr">B</div>3 a 6 mois sur livret accessible</div><div class="qopt" onclick="qa(this,'wrong','0-2')"><div class="qltr">C</div>12 mois</div></div><div class="qfb good" id="qfg-0-2">&#x2705; 3 a 6 mois sur Livret A ou LDDS. Ce matelas t'evite de vendre en urgence.</div><div class="qfb bad" id="qfb-0-2">&#x274C; 3 a 6 mois. 1 mois insuffisant, 12 mois trop &mdash; l'exces dort sans rapporter.</div></div>
+  </div>
+  <div class="step-actions"><button class="btn btn-p" onclick="gA(0,3)">&larr; Retour</button><button class="btn btn-n disabled" id="bf-0" onclick="finCh(0)">Terminer &#x1F3C6; <span class="xpt">+50 XP</span></button></div>
+</div>
+<div class="act-block" id="ch0-comp">
+  <div class="ch-comp"><span class="ch-comp-icon">&#x1F389;</span><h2>Chapitre 1 termine, <span class="pname"></span>&nbsp;!</h2><p class="ch-comp-sub">Inflation, temps, interets composes, budget &mdash; tu as tout.</p><div class="ch-comp-xp">&#x26A1; <span id="xe0">0</span> XP gagnes ce chapitre</div><br><button class="btn-nch" onclick="stCh(1)">Chapitre 2 &mdash; Ou et dans quoi investir ? &rarr;</button></div>
+</div>
+</div>
+
+<!-- CH2 -->
+<div class="ch-block" id="ch-1">
+<div class="act-block active" id="ch1-a0">
+  <div class="step-intro"><div class="step-num">01</div><div><div class="step-title">L'enveloppe d'abord, le support ensuite</div><div class="step-desc">Une distinction fondamentale que la plupart ignorent &mdash; et qui coute cher fiscalement.</div></div></div>
+  <div class="card">
+    <div class="ctitle">&#x1F4E6; L'analogie qui change tout</div>
+    <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;margin-bottom:14px;">
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;"><div style="font-size:1.4em;margin-bottom:5px;">&#x1F4E6;</div><div style="font-size:.8em;font-weight:800;color:var(--navy);margin-bottom:3px;">L'enveloppe</div><div style="font-size:.7em;color:var(--muted);">PEA &middot; AV &middot; PER &middot; CTO<br>Determine la fiscalite</div></div>
+      <div style="font-size:1.4em;color:var(--muted);">&#x2260;</div>
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;"><div style="font-size:1.4em;margin-bottom:5px;">&#x1F4C8;</div><div style="font-size:.8em;font-weight:800;color:var(--navy);margin-bottom:3px;">Le support</div><div style="font-size:.7em;color:var(--muted);">ETF &middot; SCPI &middot; Fonds &euro;<br>Determine le rendement</div></div>
+    </div>
+    <div class="alert al-b">&#x1F4A1; On choisit <strong>d'abord l'enveloppe</strong> selon sa fiscalite, <strong>ensuite le support</strong> selon son profil.</div>
+    <div class="lecon"><div class="lecon-l">&#x1F511; La lecon</div><div class="lecon-t"><strong>La boite prime sur le contenu.</strong> Mettre un bon support dans une mauvaise enveloppe peut couter des milliers d'euros d'impots inutiles.</div></div>
+  </div>
+  <div class="tline tl-b">&#x2726; Decouvrons les 4 enveloppes fiscales a connaitre &rarr;</div>
+  <div class="step-actions"><button class="btn btn-p disabled">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(1,0,50)">Acte suivant <span class="xpt">+50 XP</span> &rarr;</button></div>
+</div>
+<div class="act-block" id="ch1-a1">
+  <div class="step-intro"><div class="step-num">02</div><div><div class="step-title">Les 4 enveloppes fiscales</div><div class="step-desc">PEA &middot; Assurance-Vie &middot; PER &middot; CTO &mdash; chacune a ses regles, avantages et limites.</div></div></div>
+  <div class="card">
+    <div class="env-grid">
+      <div class="env-c"><div class="env-n">&#x1F4C8; PEA</div><div class="env-d">Plan d'Epargne en Actions. La priorite absolue pour investir en bourse.</div><div class="env-p">&#x2705; 0% d'impot sur les gains apres 5 ans</div><div class="env-m">&#x26A0;&#xFE0F; Plafond 150 000 &euro; &middot; Actions europeennes</div></div>
+      <div class="env-c"><div class="env-n">&#x1F6E1;&#xFE0F; Assurance-Vie</div><div class="env-d">L'enveloppe polyvalente. Transmission avantageuse et souplesse.</div><div class="env-p">&#x2705; Abattement 152 500 &euro; en succession</div><div class="env-m">&#x26A0;&#xFE0F; Frais variables &mdash; bien choisir son contrat</div></div>
+      <div class="env-c"><div class="env-n">&#x1F3D6;&#xFE0F; PER</div><div class="env-d">Plan d'Epargne Retraite. Tres pertinent si TMI &ge; 30%.</div><div class="env-p">&#x2705; Deduction des versements de l'IR</div><div class="env-m">&#x26A0;&#xFE0F; Capital bloque jusqu'a la retraite</div></div>
+      <div class="env-c"><div class="env-n">&#x1F30D; CTO</div><div class="env-d">Compte-Titres Ordinaire. Sans plafond, acces a tous les marches.</div><div class="env-p">&#x2705; Aucun plafond &middot; Tous les marches</div><div class="env-m">&#x26A0;&#xFE0F; Fiscalite pleine (PFU 30%) &middot; Apres PEA plein</div></div>
+    </div>
+    <div class="lecon"><div class="lecon-l">&#x1F511; La strategie type</div><div class="lecon-t">PEA en priorite &rarr; AV pour prendre date tot &rarr; PER si TMI &ge; 30% &rarr; CTO quand PEA plein.</div></div>
+  </div>
+  <div class="tline tl-g">&#x2726; Tu connais les boites. Qu'est-ce qu'on met dedans ? &rarr;</div>
+  <div class="step-actions"><button class="btn btn-p" onclick="gA(1,0)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(1,1,50)">Acte suivant <span class="xpt">+50 XP</span> &rarr;</button></div>
+</div>
+<div class="act-block" id="ch1-a2">
+  <div class="step-intro"><div class="step-num">03</div><div><div class="step-title">Les supports d'investissement</div><div class="step-desc">Du plus defensif au plus offensif &mdash; chaque support a son couple rendement/risque.</div></div></div>
+  <div class="card">
+    <div class="ctitle">&#x1F4CA; Le spectre risque / rendement</div>
+    <div style="display:flex;flex-direction:column;gap:9px;margin-bottom:12px;">
+      <div style="display:flex;align-items:center;gap:11px;padding:10px 12px;background:var(--bg);border-radius:10px;border:1px solid var(--border);"><span style="font-size:1.1em;">&#x1F3E6;</span><div style="flex:1;"><div style="font-size:.82em;font-weight:700;color:var(--navy);">Fonds euros</div><div style="font-size:.7em;color:var(--muted);">Capital garanti &middot; 2&ndash;4%/an &middot; Via AV</div></div><div style="font-size:.65em;font-weight:700;background:#f0fdf4;color:var(--green);padding:2px 8px;border-radius:7px;">Defensif</div></div>
+      <div style="display:flex;align-items:center;gap:11px;padding:10px 12px;background:var(--bg);border-radius:10px;border:1px solid var(--border);"><span style="font-size:1.1em;">&#x1F4C4;</span><div style="flex:1;"><div style="font-size:.82em;font-weight:700;color:var(--navy);">SCPI</div><div style="font-size:.7em;color:var(--muted);">Immobilier papier &middot; 4&ndash;6%/an &middot; Revenus trimestriels</div></div><div style="font-size:.65em;font-weight:700;background:var(--blue-lt);color:var(--blue);padding:2px 8px;border-radius:7px;">Modere</div></div>
+      <div style="display:flex;align-items:center;gap:11px;padding:10px 12px;background:var(--bg);border-radius:10px;border:1px solid var(--border);"><span style="font-size:1.1em;">&#x1F30D;</span><div style="flex:1;"><div style="font-size:.82em;font-weight:700;color:var(--navy);">ETF World / S&amp;P500</div><div style="font-size:.7em;color:var(--muted);">Actions mondiales &middot; 7&ndash;10%/an historique &middot; DCA mensuel</div></div><div style="font-size:.65em;font-weight:700;background:#fffbeb;color:#92400e;padding:2px 8px;border-radius:7px;">Dynamique</div></div>
+      <div style="display:flex;align-items:center;gap:11px;padding:10px 12px;background:var(--bg);border-radius:10px;border:1px solid var(--border);"><span style="font-size:1.1em;">&#x20BF;</span><div style="flex:1;"><div style="font-size:.82em;font-weight:700;color:var(--navy);">Crypto / Exotique</div><div style="font-size:.7em;color:var(--muted);">Forte volatilite &middot; Max 5&ndash;10% du portefeuille</div></div><div style="font-size:.65em;font-weight:700;background:#fef2f2;color:var(--red);padding:2px 8px;border-radius:7px;">Offensif</div></div>
+    </div>
+    <div class="lecon"><div class="lecon-l">&#x1F511; La lecon</div><div class="lecon-t">Le bon support n'existe pas &mdash; il y a le bon support pour toi, a ce moment de ta vie. <strong>Un profil prudent a 2 ans de la retraite n'investit pas comme un profil dynamique a 25 ans.</strong></div></div>
+  </div>
+  <div class="tline tl-a">&#x2726; Et si quelques % de frais suffisaient a tout ruiner ? &rarr;</div>
+  <div class="step-actions"><button class="btn btn-p" onclick="gA(1,1)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(1,2,50)">Acte suivant <span class="xpt">+50 XP</span> &rarr;</button></div>
+</div>
+<div class="act-block" id="ch1-a3">
+  <div class="step-intro"><div class="step-num">04</div><div><div class="step-title">L'impact devastateur des frais</div><div class="step-desc">2% de frais annuels. Ca parait peu. Sur 30 ans, ca divise ton patrimoine par deux.</div></div></div>
+  <div class="card">
+    <div class="ctitle">&#x26A0;&#xFE0F; Simulateur impact des frais</div>
+    <div class="sim-box">
+      <div class="sim-inp"><div class="sf"><div class="sl">Capital initial</div><input type="number" class="si" id="s1c" value="10000" oninput="cS1()"></div><div class="sf"><div class="sl">Rendement brut %</div><input type="number" class="si" id="s1r" value="8" step="0.5" oninput="cS1()"></div><div class="sf"><div class="sl">Frais annuels %</div><input type="number" class="si" id="s1f" value="2" step="0.1" oninput="cS1()"></div></div>
+      <div style="font-size:.74em;color:var(--muted);margin-bottom:12px;">Duree : <input type="number" class="si" id="s1d" value="30" style="width:55px;display:inline;padding:4px 7px;" oninput="cS1()"> ans</div>
+      <div class="sim-res"><div class="sk"><div class="skv" id="s1sans" style="color:var(--green);">—</div><div class="skl">Sans frais</div></div><div class="sk"><div class="skv" id="s1avec" style="color:var(--red);">—</div><div class="skl">Avec frais</div></div><div class="sk"><div class="skv" id="s1perte" style="color:var(--amber);">—</div><div class="skl">Cout total</div></div></div>
+      <div class="sch"><canvas id="cs1"></canvas></div>
+      <button class="sxbtn" id="sb1" onclick="uS('sb1',1)">&#x26A1; Valider ma simulation (+25 XP bonus)</button>
+    </div>
+    <div class="lecon" style="margin-top:14px;"><div class="lecon-l">&#x1F511; La regle d'or</div><div class="lecon-t">ETF &lt; 0,3%/an. Courtiers sans frais de garde. <strong>Chaque fraction de % compte sur le long terme.</strong></div></div>
+  </div>
+  <div class="tline tl-p">&#x2726; Tu sais ou investir. Comment construire ta strategie personnelle ? &rarr;</div>
+  <div class="step-actions"><button class="btn btn-p" onclick="gA(1,2)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(1,3,50)">Quiz <span class="xpt">+50 XP</span> &rarr;</button></div>
+</div>
+<div class="act-block" id="ch1-quiz">
+  <div class="step-intro"><div class="step-num">05</div><div><div class="step-title">Quiz &mdash; Chapitre 2</div><div class="step-desc">3 questions sur les enveloppes et les supports.</div></div></div>
+  <div class="card">
+    <div class="qdots"><div class="qd active" id="qd-1-0"></div><div class="qd" id="qd-1-1"></div><div class="qd" id="qd-1-2"></div></div>
+    <div id="qb-1-0"><div class="qq">&#x2753; Quelle enveloppe faut-il ouvrir en priorite pour investir en bourse en France ?</div><div class="qopts"><div class="qopt" onclick="qa(this,'wrong','1-0')"><div class="qltr">A</div>CTO &mdash; il n'a pas de plafond</div><div class="qopt" onclick="qa(this,'correct','1-0')"><div class="qltr">B</div>PEA &mdash; 0% d'impot sur les gains apres 5 ans</div><div class="qopt" onclick="qa(this,'wrong','1-0')"><div class="qltr">C</div>AV &mdash; elle est plus connue</div></div><div class="qfb good" id="qfg-1-0">&#x2705; Le PEA est la priorite absolue : exoneration totale apres 5 ans.</div><div class="qfb bad" id="qfb-1-0">&#x274C; C'est le PEA. Le CTO est fiscalise a 30%, l'AV est utile pour d'autres usages.</div></div>
+    <div class="qsep" id="qs-1-1"></div><div id="qb-1-1" style="display:none;opacity:0;transition:opacity .4s;"><div class="qq">&#x2753; Un ETF World couvre combien d'entreprises ?</div><div class="qopts"><div class="qopt" onclick="qa(this,'wrong','1-1')"><div class="qltr">A</div>50 entreprises</div><div class="qopt" onclick="qa(this,'wrong','1-1')"><div class="qltr">B</div>200 entreprises</div><div class="qopt" onclick="qa(this,'correct','1-1')"><div class="qltr">C</div>1 500+ entreprises mondiales</div></div><div class="qfb good" id="qfg-1-1">&#x2705; Un ETF World offre une diversification immediate sur 1 500+ entreprises de 23 pays.</div><div class="qfb bad" id="qfb-1-1">&#x274C; Un ETF World couvre 1 500+ entreprises mondiales. L'outil de diversification le plus puissant et le moins cher.</div></div>
+    <div class="qsep" id="qs-1-2"></div><div id="qb-1-2" style="display:none;opacity:0;transition:opacity .4s;"><div class="qq">&#x2753; 2% de frais annuels pendant 30 ans sur 10 000 &euro; a 8% brut : quel est l'impact ?</div><div class="qopts"><div class="qopt" onclick="qa(this,'wrong','1-2')"><div class="qltr">A</div>On perd environ 2 000 &euro;</div><div class="qopt" onclick="qa(this,'wrong','1-2')"><div class="qltr">B</div>On perd environ 20 000 &euro;</div><div class="qopt" onclick="qa(this,'correct','1-2')"><div class="qltr">C</div>On perd ~60 000 &euro; &mdash; le patrimoine est divise par 2</div></div><div class="qfb good" id="qfg-1-2">&#x2705; 2% de frais pendant 30 ans = ~60 000 &euro; perdus. Le patrimoine passe de ~100k a ~43k&euro;.</div><div class="qfb bad" id="qfb-1-2">&#x274C; L'impact est enorme : ~60 000 &euro; perdus. Les frais tuent silencieusement.</div></div>
+  </div>
+  <div class="step-actions"><button class="btn btn-p" onclick="gA(1,3)">&larr; Retour</button><button class="btn btn-n disabled" id="bf-1" onclick="finCh(1)">Terminer &#x1F3C6; <span class="xpt">+50 XP</span></button></div>
+</div>
+<div class="act-block" id="ch1-comp"><div class="ch-comp"><span class="ch-comp-icon">&#x1F4BC;</span><h2>Chapitre 2 termine, <span class="pname"></span>&nbsp;!</h2><p class="ch-comp-sub">Enveloppes, supports, frais &mdash; tu as le cadre complet.</p><div class="ch-comp-xp">&#x26A1; <span id="xe1">0</span> XP gagnes</div><br><button class="btn-nch" onclick="stCh(2)">Chapitre 3 &mdash; Ma strategie &rarr;</button></div></div>
+</div>
+
+<!-- CH3 -->
+<div class="ch-block" id="ch-2">
+<div class="act-block active" id="ch2-a0">
+  <div class="step-intro"><div class="step-num">01</div><div><div class="step-title">Les deux variables qui changent tout</div><div class="step-desc">Avant de choisir un support : ton horizon de temps et ta tolerance emotionnelle a la perte.</div></div></div>
+  <div class="card">
+    <div class="ctitle">&#x23F1;&#xFE0F; Horizon x Tolerance = Ton profil</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px;"><div style="font-size:.82em;font-weight:800;color:var(--navy);margin-bottom:8px;">&#x23F3; Horizon de temps</div><div style="font-size:.74em;color:var(--muted);line-height:1.8;">&#x1F4CD; Court &lt; 3 ans &rarr; Securite totale<br>&#x1F4CD; Moyen 3&ndash;7 ans &rarr; Equilibre<br>&#x1F4CD; Long 8 ans+ &rarr; Performance</div></div>
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px;"><div style="font-size:.82em;font-weight:800;color:var(--navy);margin-bottom:8px;">&#x1F9E0; Tolerance emotionnelle</div><div style="font-size:.74em;color:var(--muted);line-height:1.8;">&#x1F628; Panique a &minus;5% &rarr; Defensif<br>&#x1F610; Attends a &minus;20% &rarr; Equilibre<br>&#x1F60F; Renforce a &minus;30% &rarr; Offensif</div></div>
+    </div>
+    <div class="lecon"><div class="lecon-l">&#x1F511; La lecon</div><div class="lecon-t"><strong>L'horizon prime sur la tolerance.</strong> On n'investit pas en bourse de l'argent dont on aura besoin dans 2 ans.</div></div>
+  </div>
+  <div class="tline tl-b">&#x2726; Decouvre les 4 profils et ton allocation recommandee &rarr;</div>
+  <div class="step-actions"><button class="btn btn-p disabled">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(2,0,50)">Acte suivant <span class="xpt">+50 XP</span> &rarr;</button></div>
+</div>
+<div class="act-block" id="ch2-a1">
+  <div class="step-intro"><div class="step-num">02</div><div><div class="step-title">Les 4 profils investisseurs</div><div class="step-desc">Clique sur ton profil et selectionne ton horizon pour voir ton allocation recommandee.</div></div></div>
+  <div class="card">
+    <div class="ctitle">&#x1F3AF; Quel profil es-tu ?</div>
+    <div class="pgrid"><div class="pc" onclick="selP(this,'Defensif')"><div class="pi">&#x1F6E1;&#xFE0F;</div><div class="pn">Defensif</div><div class="ps">Securite &middot; &minus;10% max</div></div><div class="pc" onclick="selP(this,'Equilibre')"><div class="pi">&#x2696;&#xFE0F;</div><div class="pn">Equilibre</div><div class="ps">Croissance &middot; &minus;30% max</div></div><div class="pc" onclick="selP(this,'Dynamique')"><div class="pi">&#x1F680;</div><div class="pn">Dynamique</div><div class="ps">Performance &middot; &minus;50% max</div></div><div class="pc" onclick="selP(this,'Offensif')"><div class="pi">&#x26A1;</div><div class="pn">Offensif</div><div class="ps">Maximiser &middot; Forte volatilite</div></div></div>
+    <div id="hsel" style="display:none;margin-bottom:10px;"><div style="font-size:.7em;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px;">Ton horizon</div><div class="hbtns"><button class="hb" onclick="selH('court',this)">Court &lt; 3 ans</button><button class="hb" onclick="selH('moyen',this)">Moyen 3&ndash;7 ans</button><button class="hb" onclick="selH('long',this)">Long 8 ans+</button></div></div>
+    <div class="abox" id="abox"><div class="atitle" id="atitle">Allocation recommandee</div><div class="arow"><div class="albl">Epargne</div><div class="atrack"><div class="afill" id="af-ep" style="background:#0891b2;"></div></div><div class="apct" id="ap-ep" style="color:#0891b2;"></div></div><div class="arow"><div class="albl">Defensif</div><div class="atrack"><div class="afill" id="af-df" style="background:var(--green);"></div></div><div class="apct" id="ap-df" style="color:var(--green);"></div></div><div class="arow"><div class="albl">Bourse</div><div class="atrack"><div class="afill" id="af-bo" style="background:var(--blue);"></div></div><div class="apct" id="ap-bo" style="color:var(--blue);"></div></div><div class="arow"><div class="albl">Exotique</div><div class="atrack"><div class="afill" id="af-ex" style="background:var(--amber);"></div></div><div class="apct" id="ap-ex" style="color:var(--amber);"></div></div><div class="arow"><div class="albl">Immo Papier</div><div class="atrack"><div class="afill" id="af-ip" style="background:var(--purple);"></div></div><div class="apct" id="ap-ip" style="color:var(--purple);"></div></div></div>
+  </div>
+  <div class="tline tl-g">&#x2726; Tu sais qui tu es. Comment investir regulierement sans y penser ? &rarr;</div>
+  <div class="step-actions"><button class="btn btn-p" onclick="gA(2,0)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(2,1,50)">Acte suivant <span class="xpt">+50 XP</span> &rarr;</button></div>
+</div>
+<div class="act-block" id="ch2-a2">
+  <div class="step-intro"><div class="step-num">03</div><div><div class="step-title">Le DCA &mdash; la discipline qui bat le genie</div><div class="step-desc">Investir une somme fixe chaque mois, quoi qu'il arrive. Simple. Puissant. Redoutablement efficace.</div></div></div>
+  <div class="card">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px;">
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:13px;text-align:center;"><div style="font-size:1.4em;margin-bottom:4px;">&#x1F4C5;</div><div style="font-size:.78em;font-weight:700;color:var(--navy);margin-bottom:3px;">Regularite</div><div style="font-size:.66em;color:var(--muted);">Meme montant chaque mois, en hausse ou en baisse</div></div>
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:13px;text-align:center;"><div style="font-size:1.4em;margin-bottom:4px;">&#x1F9E0;</div><div style="font-size:.78em;font-weight:700;color:var(--navy);margin-bottom:3px;">Pas d'emotion</div><div style="font-size:.66em;color:var(--muted);">Supprime les decisions irrationnelles liees au marche</div></div>
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:13px;text-align:center;"><div style="font-size:1.4em;margin-bottom:4px;">&#x1F4C9;&#x27A1;&#x1F4C8;</div><div style="font-size:.78em;font-weight:700;color:var(--navy);margin-bottom:3px;">Lissage du risque</div><div style="font-size:.66em;color:var(--muted);">On achete plus quand c'est bas, moins quand c'est haut</div></div>
+    </div>
+    <div class="lecon"><div class="lecon-l">&#x1F511; La lecon</div><div class="lecon-t">Un virement automatique le 1er du mois. C'est tout. <strong>Le meilleur investisseur est celui qui ne regarde pas.</strong></div></div>
+  </div>
+  <div class="tline tl-a">&#x2726; Tu as une strategie. Comment passer a l'action concretement ? &rarr;</div>
+  <div class="step-actions"><button class="btn btn-p" onclick="gA(2,1)">&larr; Retour</button><button class="btn btn-n" onclick="goQuiz(2)">Quiz <span class="xpt">+50 XP</span> &rarr;</button></div>
+</div>
+<div class="act-block" id="ch2-quiz">
+  <div class="step-intro"><div class="step-num">04</div><div><div class="step-title">Quiz &mdash; Chapitre 3</div><div class="step-desc">3 questions sur les profils et la strategie.</div></div></div>
+  <div class="card">
+    <div class="qdots"><div class="qd active" id="qd-2-0"></div><div class="qd" id="qd-2-1"></div><div class="qd" id="qd-2-2"></div></div>
+    <div id="qb-2-0"><div class="qq">&#x2753; Quelle variable est la plus importante pour determiner son profil ?</div><div class="qopts"><div class="qopt" onclick="qa(this,'wrong','2-0')"><div class="qltr">A</div>Le montant qu'on peut investir</div><div class="qopt" onclick="qa(this,'correct','2-0')"><div class="qltr">B</div>L'horizon de temps et la tolerance emotionnelle</div><div class="qopt" onclick="qa(this,'wrong','2-0')"><div class="qltr">C</div>Les conseils de son banquier</div></div><div class="qfb good" id="qfg-2-0">&#x2705; L'horizon prime sur tout. On n'investit pas de l'argent dont on aura besoin dans 2 ans en bourse.</div><div class="qfb bad" id="qfb-2-0">&#x274C; L'horizon et la tolerance sont les deux variables cles. Le montant est secondaire.</div></div>
+    <div class="qsep" id="qs-2-1"></div><div id="qb-2-1" style="display:none;opacity:0;transition:opacity .4s;"><div class="qq">&#x2753; Qu'est-ce que le DCA ?</div><div class="qopts"><div class="qopt" onclick="qa(this,'wrong','2-1')"><div class="qltr">A</div>Acheter en grande quantite quand les marches baissent</div><div class="qopt" onclick="qa(this,'correct','2-1')"><div class="qltr">B</div>Investir un montant fixe chaque mois, quoi qu'il arrive</div><div class="qopt" onclick="qa(this,'wrong','2-1')"><div class="qltr">C</div>Diversifier sur plusieurs courtiers</div></div><div class="qfb good" id="qfg-2-1">&#x2705; DCA = meme montant chaque mois. Simple, automatique, redoutablement efficace.</div><div class="qfb bad" id="qfb-2-1">&#x274C; DCA = montant fixe chaque mois. Ca lisse le risque et supprime les decisions emotionnelles.</div></div>
+    <div class="qsep" id="qs-2-2"></div><div id="qb-2-2" style="display:none;opacity:0;transition:opacity .4s;"><div class="qq">&#x2753; Un profil Defensif a 2 ans de la retraite devrait avoir quelle allocation principale ?</div><div class="qopts"><div class="qopt" onclick="qa(this,'wrong','2-2')"><div class="qltr">A</div>70% en bourse pour maximiser les gains</div><div class="qopt" onclick="qa(this,'correct','2-2')"><div class="qltr">B</div>Majorite en epargne et fonds defensifs &mdash; priorite a la securite</div><div class="qopt" onclick="qa(this,'wrong','2-2')"><div class="qltr">C</div>50% crypto pour rattraper le temps perdu</div></div><div class="qfb good" id="qfg-2-2">&#x2705; A 2 ans de la retraite, on securise. Priorite epargne + fonds defensifs.</div><div class="qfb bad" id="qfb-2-2">&#x274C; A 2 ans de la retraite, l'horizon est court. Majorite en securise.</div></div>
+  </div>
+  <div class="step-actions"><button class="btn btn-p" onclick="gA(2,2)">&larr; Retour</button><button class="btn btn-n disabled" id="bf-2" onclick="finCh(2)">Terminer &#x1F3C6; <span class="xpt">+50 XP</span></button></div>
+</div>
+<div class="act-block" id="ch2-comp"><div class="ch-comp"><span class="ch-comp-icon">&#x265F;&#xFE0F;</span><h2>Chapitre 3 termine, <span class="pname"></span>&nbsp;!</h2><p class="ch-comp-sub">Profil, horizon, DCA, allocation cible &mdash; tu as ta strategie.</p><div class="ch-comp-xp">&#x26A1; <span id="xe2">0</span> XP gagnes</div><br><button class="btn-nch" onclick="stCh(3)">Chapitre 4 &mdash; Passer a l'action &rarr;</button></div></div>
+</div>
+
+<!-- CH4 -->
+<div class="ch-block" id="ch-3">
+<div class="act-block active" id="ch3-a0">
+  <div class="step-intro"><div class="step-num">01</div><div><div class="step-title">Ton budget : la base de tout</div><div class="step-desc">On ne peut pas investir ce qu'on ne connait pas. Premier pas : savoir combien il te reste vraiment.</div></div></div>
+  <div class="card">
+    <div class="ctitle">&#x1F4B0; La regle 50 / 30 / 20</div>
+    <div class="bgrid"><div class="bc"><div class="bpct" style="color:var(--blue);">50%</div><div class="blbl">Depenses fixes</div><div class="bex">Loyer &middot; charges &middot; credit &middot; assurances</div></div><div class="bc"><div class="bpct" style="color:var(--amber);">30%</div><div class="blbl">Depenses variables</div><div class="bex">Loisirs &middot; restos &middot; vetements &middot; voyages</div></div><div class="bc"><div class="bpct" style="color:var(--green);">20%</div><div class="blbl">Epargne &amp; invest.</div><div class="bex">Matelas puis investissements</div></div></div>
+    <div class="fgrid"><div class="fi"><div class="fe">&#x1F4FA;</div><div class="fl">Abonnements</div><div class="fd">50&ndash;100&euro;/mois</div></div><div class="fi"><div class="fe">&#x1F355;</div><div class="fl">Restos</div><div class="fd">Le poste qui explose</div></div><div class="fi"><div class="fe">&#x1F697;</div><div class="fl">Voiture</div><div class="fd">30&ndash;40% du budget</div></div><div class="fi"><div class="fe">&#x1F6D2;</div><div class="fl">Achats impulsifs</div><div class="fd">Cafe, snacks, online</div></div><div class="fi"><div class="fe">&#x1F4F1;</div><div class="fl">Forfaits</div><div class="fd">Renegociable</div></div><div class="fi"><div class="fe">&#x1F3E6;</div><div class="fl">Frais bancaires</div><div class="fd">Discrets</div></div></div>
+    <div class="lecon"><div class="lecon-l">&#x1F511; La lecon</div><div class="lecon-t">Revenus &minus; fixes &minus; variables = <strong>capacite d'epargne reelle</strong>. Si ce chiffre est flou, aucune strategie ne tient.</div></div>
+  </div>
+  <div class="tline tl-r">&#x2726; Avant d'agir, voici les 6 erreurs qui coutent le plus cher &rarr;</div>
+  <div class="step-actions"><button class="btn btn-p disabled">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(3,0,50)">Acte suivant <span class="xpt">+50 XP</span> &rarr;</button></div>
+</div>
+<div class="act-block" id="ch3-a1">
+  <div class="step-intro"><div class="step-num">02</div><div><div class="step-title">Les 6 erreurs qui coutent le plus cher</div><div class="step-desc">Apprendre des erreurs des autres est gratuit. En faire les siennes ne l'est pas.</div></div></div>
+  <div class="card">
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:var(--bg);border-radius:9px;border:1px solid var(--border);font-size:.8em;"><span>&#x23F0;</span><div><strong style="color:var(--navy);">Attendre le bon moment.</strong> <span style="color:var(--muted);">Il n'arrive jamais. Le meilleur moment c'est maintenant.</span></div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:var(--bg);border-radius:9px;border:1px solid var(--border);font-size:.8em;"><span>&#x1F631;</span><div><strong style="color:var(--navy);">Paniquer et vendre en baisse.</strong> <span style="color:var(--muted);">La baisse est temporaire. La vente cristallise la perte definitiveement.</span></div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:var(--bg);border-radius:9px;border:1px solid var(--border);font-size:.8em;"><span>&#x1F3B2;</span><div><strong style="color:var(--navy);">Suivre les tips des reseaux.</strong> <span style="color:var(--muted);">Quand tu l'entends sur TikTok, c'est souvent trop tard.</span></div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:var(--bg);border-radius:9px;border:1px solid var(--border);font-size:.8em;"><span>&#x1F3E6;</span><div><strong style="color:var(--navy);">Payer des frais excessifs.</strong> <span style="color:var(--muted);">2% annuels sur 30 ans = patrimoine divise par 2.</span></div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:var(--bg);border-radius:9px;border:1px solid var(--border);font-size:.8em;"><span>&#x1F500;</span><div><strong style="color:var(--navy);">Sur-diversifier.</strong> <span style="color:var(--muted);">Un ETF World couvre deja 1 500 entreprises. 30 lignes ne protegent pas plus que 5.</span></div></div>
+      <div style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:var(--bg);border-radius:9px;border:1px solid var(--border);font-size:.8em;"><span>&#x1F440;</span><div><strong style="color:var(--navy);">Regarder son portefeuille tous les jours.</strong> <span style="color:var(--muted);">Plus on regarde, plus on est tente d'agir. La passivite est une strategie.</span></div></div>
+    </div>
+  </div>
+  <div class="tline tl-b">&#x2726; Tu connais les pieges. Voici le plan concret en 5 etapes &rarr;</div>
+  <div class="step-actions"><button class="btn btn-p" onclick="gA(3,0)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(3,1,50)">Acte suivant <span class="xpt">+50 XP</span> &rarr;</button></div>
+</div>
+<div class="act-block" id="ch3-a2">
+  <div class="step-intro"><div class="step-num">03</div><div><div class="step-title">Le plan concret en 5 etapes</div><div class="step-desc">Simple. Regulier. Long terme. Dans cet ordre exact.</div></div></div>
+  <div class="card">
+    <div style="display:flex;flex-direction:column;gap:11px;">
+      <div style="display:flex;gap:13px;align-items:flex-start;"><div style="width:30px;height:30px;border-radius:50%;background:var(--blue);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.78em;flex-shrink:0;">1</div><div><div style="font-size:.86em;font-weight:700;color:var(--navy);">Definir son horizon et son profil</div><div style="font-size:.74em;color:var(--muted);">Court / moyen / long terme &rarr; Defensif / Equilibre / Dynamique / Offensif</div></div></div>
+      <div style="display:flex;gap:13px;align-items:flex-start;"><div style="width:30px;height:30px;border-radius:50%;background:var(--blue);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.78em;flex-shrink:0;">2</div><div><div style="font-size:.86em;font-weight:700;color:var(--navy);">Construire son matelas de securite</div><div style="font-size:.74em;color:var(--muted);">3 a 6 mois de depenses sur Livret A ou LDDS. Non negociable.</div></div></div>
+      <div style="display:flex;gap:13px;align-items:flex-start;"><div style="width:30px;height:30px;border-radius:50%;background:var(--blue);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.78em;flex-shrink:0;">3</div><div><div style="font-size:.86em;font-weight:700;color:var(--navy);">Ouvrir son enveloppe fiscale</div><div style="font-size:.74em;color:var(--muted);">PEA en priorite &middot; AV pour prendre date &middot; PER si TMI &ge; 30%</div></div></div>
+      <div style="display:flex;gap:13px;align-items:flex-start;"><div style="width:30px;height:30px;border-radius:50%;background:var(--blue);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.78em;flex-shrink:0;">4</div><div><div style="font-size:.86em;font-weight:700;color:var(--navy);">Mettre en place le DCA automatique</div><div style="font-size:.74em;color:var(--muted);">Virement automatique le 1er du mois. Montant fixe. Ne pas y toucher.</div></div></div>
+      <div style="display:flex;gap:13px;align-items:flex-start;"><div style="width:30px;height:30px;border-radius:50%;background:var(--green);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.78em;flex-shrink:0;">5</div><div><div style="font-size:.86em;font-weight:700;color:var(--navy);">Tenir &mdash; et ne pas toucher</div><div style="font-size:.74em;color:var(--muted);">C'est la partie la plus difficile. Et la plus rentable.</div></div></div>
+    </div>
+  </div>
+  <div class="tline tl-p">&#x2726; Ou en es-tu vraiment ? Evalue ton score investisseur &rarr;</div>
+  <div class="step-actions"><button class="btn btn-p" onclick="gA(3,1)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(3,2,50)">Acte suivant <span class="xpt">+50 XP</span> &rarr;</button></div>
+</div>
+<div class="act-block" id="ch3-a3">
+  <div class="step-intro"><div class="step-num">04</div><div><div class="step-title">Mon Score Investisseur</div><div class="step-desc">13 cases. Coche ce que tu as deja. Decouvre ou tu en es vraiment.</div></div></div>
+  <div class="card">
+    <div class="score-disp"><div class="score-nb"><div class="score-n" id="scN">0</div><div class="score-s">/ 13 pts</div></div><div class="score-bw"><div class="score-bg"><div class="score-bf" id="scB" style="width:0%;"></div></div><div class="score-v" id="scV">Coche les cases &#x1F447;</div></div></div>
+    <div class="scat">&#x1F4B8; Budget &amp; Cash Flow</div>
+    <div class="sgrid"><div class="scitem" onclick="tSc(this)"><div class="scbox"></div><div class="sctext">Mon budget mensuel est clair et suivi</div></div><div class="scitem" onclick="tSc(this)"><div class="scbox"></div><div class="sctext">Je gagne plus que je ne depense</div></div><div class="scitem" onclick="tSc(this)"><div class="scbox"></div><div class="sctext">Je fais mes virements d'investissement en debut de mois</div></div><div class="scitem" onclick="tSc(this)"><div class="scbox"></div><div class="sctext">J'ai 3 a 6 mois de depenses sur livret</div></div></div>
+    <div class="scat">&#x1F3DB;&#xFE0F; Structure patrimoniale</div>
+    <div class="sgrid"><div class="scitem" onclick="tSc(this)"><div class="scbox"></div><div class="sctext">Ma fiscalite est optimisee</div></div><div class="scitem" onclick="tSc(this)"><div class="scbox"></div><div class="sctext">Mon patrimoine est suffisamment liquide</div></div><div class="scitem" onclick="tSc(this)"><div class="scbox"></div><div class="sctext">J'ai de l'immobilier (RP, locatif ou SCPI)</div></div></div>
+    <div class="scat">&#x1F4C8; Investissements actifs</div>
+    <div class="sgrid"><div class="scitem" onclick="tSc(this)"><div class="scbox"></div><div class="sctext">J'investis en Bourse via des ETF</div></div><div class="scitem" onclick="tSc(this)"><div class="scbox"></div><div class="sctext">J'ai pris date sur mon PEA (meme vide)</div></div><div class="scitem" onclick="tSc(this)"><div class="scbox"></div><div class="sctext">Mes frais sont au plus bas (&lt; 1%/an)</div></div><div class="scitem" onclick="tSc(this)"><div class="scbox"></div><div class="sctext">Je fais du DCA automatique chaque mois</div></div><div class="scitem" onclick="tSc(this)"><div class="scbox"></div><div class="sctext">J'ai pris date sur mon Assurance-Vie</div></div><div class="scitem" onclick="tSc(this)"><div class="scbox"></div><div class="sctext">Je detiens du Bitcoin (max 10% du portefeuille)</div></div></div>
+    <div class="scfb" id="scFb"></div>
+  </div>
+  <div class="tline tl-b">&#x2726; Valide tes acquis avec le quiz &rarr;</div>
+  <div class="step-actions"><button class="btn btn-p" onclick="gA(3,2)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(3,3,50)">Quiz <span class="xpt">+50 XP</span> &rarr;</button></div>
+</div>
+<div class="act-block" id="ch3-quiz">
+  <div class="step-intro"><div class="step-num">05</div><div><div class="step-title">Quiz &mdash; Chapitre 4</div><div class="step-desc">3 questions sur le budget et le passage a l'action.</div></div></div>
+  <div class="card">
+    <div class="qdots"><div class="qd active" id="qd-3-0"></div><div class="qd" id="qd-3-1"></div><div class="qd" id="qd-3-2"></div></div>
+    <div id="qb-3-0"><div class="qq">&#x2753; Dans la regle 50/30/20, quelle part pour l'epargne et l'investissement ?</div><div class="qopts"><div class="qopt" onclick="qa(this,'wrong','3-0')"><div class="qltr">A</div>10%</div><div class="qopt" onclick="qa(this,'wrong','3-0')"><div class="qltr">B</div>30%</div><div class="qopt" onclick="qa(this,'correct','3-0')"><div class="qltr">C</div>20%</div></div><div class="qfb good" id="qfg-3-0">&#x2705; 20% pour epargner et investir. 50% besoins, 30% envies.</div><div class="qfb bad" id="qfb-3-0">&#x274C; C'est 20%. La regle : 50% besoins fixes &middot; 30% plaisirs &middot; 20% epargne &amp; investissement.</div></div>
+    <div class="qsep" id="qs-3-1"></div><div id="qb-3-1" style="display:none;opacity:0;transition:opacity .4s;"><div class="qq">&#x2753; Quelle est la premiere action a faire avant d'investir en bourse ?</div><div class="qopts"><div class="qopt" onclick="qa(this,'wrong','3-1')"><div class="qltr">A</div>Acheter immediatement un ETF World</div><div class="qopt" onclick="qa(this,'correct','3-1')"><div class="qltr">B</div>Construire un matelas de securite de 3 a 6 mois de depenses</div><div class="qopt" onclick="qa(this,'wrong','3-1')"><div class="qltr">C</div>Ouvrir un PEA et l'alimenter a fond</div></div><div class="qfb good" id="qfg-3-1">&#x2705; Le matelas de securite est non negociable. Sans lui, une depense imprevue te force a vendre.</div><div class="qfb bad" id="qfb-3-1">&#x274C; Avant tout investissement : 3 a 6 mois de depenses sur livret accessible.</div></div>
+    <div class="qsep" id="qs-3-2"></div><div id="qb-3-2" style="display:none;opacity:0;transition:opacity .4s;"><div class="qq">&#x2753; Quelle est l'erreur principale des investisseurs debutants face a une baisse ?</div><div class="qopts"><div class="qopt" onclick="qa(this,'correct','3-2')"><div class="qltr">A</div>Vendre en panique et cristalliser la perte</div><div class="qopt" onclick="qa(this,'wrong','3-2')"><div class="qltr">B</div>Ne pas regarder leur portefeuille</div><div class="qopt" onclick="qa(this,'wrong','3-2')"><div class="qltr">C</div>Continuer leur DCA habituel</div></div><div class="qfb good" id="qfg-3-2">&#x2705; Vendre en panique est la pire chose. La baisse est temporaire, la perte cristallisee est definitive.</div><div class="qfb bad" id="qfb-3-2">&#x274C; Vendre en panique est l'erreur #1. Celui qui tient gagne.</div></div>
+  </div>
+  <div class="step-actions"><button class="btn btn-p" onclick="gA(3,3)">&larr; Retour</button><button class="btn btn-n disabled" id="bf-3" onclick="finCh(3)">Terminer &#x1F3C6; <span class="xpt">+50 XP</span></button></div>
+</div>
+<div class="act-block" id="ch3-comp"><div class="ch-comp"><span class="ch-comp-icon">&#x1F525;</span><h2>Chapitre 4 termine, <span class="pname"></span>&nbsp;!</h2><p class="ch-comp-sub">Budget, erreurs, plan en 5 etapes, score &mdash; tu es pret a agir.</p><div class="ch-comp-xp">&#x26A1; <span id="xe3">0</span> XP gagnes</div><br><button class="btn-nch" onclick="stCh(4)">Chapitre 5 &mdash; Suivre sans se perdre &rarr;</button></div></div>
+</div>
+
+<!-- CH5 -->
+<div class="ch-block" id="ch-4">
+<div class="act-block active" id="ch4-a0">
+  <div class="step-intro"><div class="step-num">01</div><div><div class="step-title">Le piege du suivi quotidien</div><div class="step-desc">Regarder son portefeuille chaque jour est l'une des pires choses qu'un investisseur puisse faire.</div></div></div>
+  <div class="card">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+      <div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:11px;padding:14px;text-align:center;"><div style="font-size:1.4em;margin-bottom:4px;">&#x1F4F1;</div><div style="font-size:.78em;font-weight:700;color:var(--red);margin-bottom:4px;">Suivi quotidien</div><div style="font-size:.68em;color:var(--muted);line-height:1.5;">Anxiete &middot; Decisions emotionnelles &middot; Ventes en panique &middot; Moins-values</div></div>
+      <div style="background:#f0fdf4;border:1px solid #a7f3d0;border-radius:11px;padding:14px;text-align:center;"><div style="font-size:1.4em;margin-bottom:4px;">&#x1F4C5;</div><div style="font-size:.78em;font-weight:700;color:var(--green);margin-bottom:4px;">Revue annuelle</div><div style="font-size:.68em;color:var(--muted);line-height:1.5;">Serenite &middot; Discipline &middot; Vision long terme &middot; Performance</div></div>
+    </div>
+    <div class="lecon"><div class="lecon-l">&#x1F511; La lecon</div><div class="lecon-t">Une revue par an. Pas plus. <strong>Le meilleur investisseur est celui qui oublie qu'il a un portefeuille.</strong></div></div>
+  </div>
+  <div class="tline tl-b">&#x2726; Mais lors de cette revue, qu'est-ce qu'on regarde vraiment ? &rarr;</div>
+  <div class="step-actions"><button class="btn btn-p disabled">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(4,0,50)">Acte suivant <span class="xpt">+50 XP</span> &rarr;</button></div>
+</div>
+<div class="act-block" id="ch4-a1">
+  <div class="step-intro"><div class="step-num">02</div><div><div class="step-title">L'indicateur qui compte vraiment</div><div class="step-desc">Pas la performance. L'ecart entre ton allocation reelle et ta cible.</div></div></div>
+  <div class="card">
+    <div class="ctitle">&#x1F3AF; La regle des 5%</div>
+    <div class="alert al-b" style="margin-bottom:14px;">&#x1F4A1; Si une poche s'ecarte de plus de 5 points de ta cible, c'est le signal de reequilibrer. En dessous, on ne touche a rien.</div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--green-lt);border-radius:9px;border:1px solid #a7f3d0;font-size:.8em;"><div style="width:10px;height:10px;border-radius:50%;background:var(--green);flex-shrink:0;"></div><div><strong>Ecart &lt; 5 pts</strong> <span style="color:var(--muted);">&rarr; Rien a faire. On laisse travailler.</span></div></div>
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:#fffbeb;border-radius:9px;border:1px solid #fde68a;font-size:.8em;"><div style="width:10px;height:10px;border-radius:50%;background:var(--amber);flex-shrink:0;"></div><div><strong>Ecart 5&ndash;10 pts</strong> <span style="color:var(--muted);">&rarr; A surveiller. Rediriger les prochains versements.</span></div></div>
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:#fef2f2;border-radius:9px;border:1px solid #fca5a5;font-size:.8em;"><div style="width:10px;height:10px;border-radius:50%;background:var(--red);flex-shrink:0;"></div><div><strong>Ecart &gt; 10 pts</strong> <span style="color:var(--muted);">&rarr; Action recommandee. Reequilibrage cible.</span></div></div>
+    </div>
+  </div>
+  <div class="tline tl-g">&#x2726; Comment reequilibrer sans payer trop d'impots ? &rarr;</div>
+  <div class="step-actions"><button class="btn btn-p" onclick="gA(4,0)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(4,1,50)">Acte suivant <span class="xpt">+50 XP</span> &rarr;</button></div>
+</div>
+<div class="act-block" id="ch4-a2">
+  <div class="step-intro"><div class="step-num">03</div><div><div class="step-title">Reequilibrer intelligemment</div><div class="step-desc">Reequilibrer ne veut pas dire vendre. Il y a des facons bien plus intelligentes.</div></div></div>
+  <div class="card">
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;">
+      <div style="display:flex;gap:12px;align-items:flex-start;padding:12px 14px;background:var(--green-lt);border-radius:10px;border:1px solid #a7f3d0;"><div style="width:26px;height:26px;border-radius:50%;background:var(--green);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.76em;flex-shrink:0;">1</div><div><div style="font-size:.82em;font-weight:700;color:var(--navy);">Rediriger les nouveaux versements</div><div style="font-size:.72em;color:var(--muted);">Investir davantage dans la poche sous-ponderee. Aucune vente, aucun impot.</div></div></div>
+      <div style="display:flex;gap:12px;align-items:flex-start;padding:12px 14px;background:var(--blue-lt);border-radius:10px;border:1px solid #bfdbfe;"><div style="width:26px;height:26px;border-radius:50%;background:var(--blue);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.76em;flex-shrink:0;">2</div><div><div style="font-size:.82em;font-weight:700;color:var(--navy);">Arbitrage au sein de l'AV</div><div style="font-size:.72em;color:var(--muted);">Vendre/acheter dans son AV sans friction fiscale immediate.</div></div></div>
+      <div style="display:flex;gap:12px;align-items:flex-start;padding:12px 14px;background:#fffbeb;border-radius:10px;border:1px solid #fde68a;"><div style="width:26px;height:26px;border-radius:50%;background:var(--amber);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.76em;flex-shrink:0;">3</div><div><div style="font-size:.82em;font-weight:700;color:var(--navy);">Vente et rachat (dernier recours)</div><div style="font-size:.72em;color:var(--muted);">En PEA apres 5 ans (exonere) ou en acceptant la fiscalite en CTO.</div></div></div>
+    </div>
+    <div class="lecon"><div class="lecon-l">&#x1F511; La lecon</div><div class="lecon-t">Reequilibrer par les versements coute zero en frais et impots. <strong>C'est toujours la premiere chose a essayer.</strong></div></div>
+  </div>
+  <div class="tline tl-p">&#x2726; Derniere lecon : quand agir et surtout quand ne pas agir &rarr;</div>
+  <div class="step-actions"><button class="btn btn-p" onclick="gA(4,1)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(4,2,50)">Acte suivant <span class="xpt">+50 XP</span> &rarr;</button></div>
+</div>
+<div class="act-block" id="ch4-a3">
+  <div class="step-intro"><div class="step-num">04</div><div><div class="step-title">Quand agir &mdash; et quand resister</div><div class="step-desc">La plupart des erreurs viennent d'agir trop souvent, pas trop peu.</div></div></div>
+  <div class="card">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+      <div><div style="font-size:.68em;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">&#x2705; Bonnes raisons d'agir</div><div style="font-size:.78em;color:var(--muted);line-height:1.9;">&#x2022; Allocation hors cible de +10 pts<br>&#x2022; Changement de situation personnelle<br>&#x2022; Horizon qui se rapproche<br>&#x2022; Revue annuelle planifiee</div></div>
+      <div><div style="font-size:.68em;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">&#x274C; Mauvaises raisons d'agir</div><div style="font-size:.78em;color:var(--muted);line-height:1.9;">&#x2022; Le marche a baisse de 10%<br>&#x2022; Un ami a vendu ses ETF<br>&#x2022; Tu as lu un article alarmiste<br>&#x2022; Tu "sens" que ca va baisser</div></div>
+    </div>
+    <div class="lecon"><div class="lecon-l">&#x1F511; La lecon finale</div><div class="lecon-t"><strong>La passivite est une strategie.</strong> Tu es maintenant mieux arme que 95% des investisseurs particuliers. Il ne reste qu'a passer a l'action.</div></div>
+  </div>
+  <div class="tline tl-a">&#x2726; Dernier quiz &mdash; puis ton badge t'attend &rarr;</div>
+  <div class="step-actions"><button class="btn btn-p" onclick="gA(4,2)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(4,3,50)">Quiz final <span class="xpt">+50 XP</span> &rarr;</button></div>
+</div>
+<div class="act-block" id="ch4-quiz">
+  <div class="step-intro"><div class="step-num">05</div><div><div class="step-title">Quiz &mdash; Chapitre 5</div><div class="step-desc">3 dernieres questions avant ton badge !</div></div></div>
+  <div class="card">
+    <div class="qdots"><div class="qd active" id="qd-4-0"></div><div class="qd" id="qd-4-1"></div><div class="qd" id="qd-4-2"></div></div>
+    <div id="qb-4-0"><div class="qq">&#x2753; A quelle frequence faut-il faire une revue de son portefeuille ?</div><div class="qopts"><div class="qopt" onclick="qa(this,'wrong','4-0')"><div class="qltr">A</div>Tous les jours &mdash; pour reagir vite</div><div class="qopt" onclick="qa(this,'wrong','4-0')"><div class="qltr">B</div>Chaque semaine</div><div class="qopt" onclick="qa(this,'correct','4-0')"><div class="qltr">C</div>Une fois par an</div></div><div class="qfb good" id="qfg-4-0">&#x2705; Une revue annuelle suffit. Plus on regarde, plus on agit emotionnellement.</div><div class="qfb bad" id="qfb-4-0">&#x274C; Une revue annuelle. Regarder tous les jours cree de l'anxiete et des decisions irrationnelles.</div></div>
+    <div class="qsep" id="qs-4-1"></div><div id="qb-4-1" style="display:none;opacity:0;transition:opacity .4s;"><div class="qq">&#x2753; A partir de quel ecart faut-il envisager un reequilibrage ?</div><div class="qopts"><div class="qopt" onclick="qa(this,'wrong','4-1')"><div class="qltr">A</div>Des 1% d'ecart</div><div class="qopt" onclick="qa(this,'correct','4-1')"><div class="qltr">B</div>A partir de 5 points d'ecart</div><div class="qopt" onclick="qa(this,'wrong','4-1')"><div class="qltr">C</div>Jamais &mdash; on ne touche a rien</div></div><div class="qfb good" id="qfg-4-1">&#x2705; La regle des 5% : en dessous, on laisse. Au-dela de 10 pts, on agit.</div><div class="qfb bad" id="qfb-4-1">&#x274C; La regle des 5% : en dessous de 5 pts, on ne touche a rien.</div></div>
+    <div class="qsep" id="qs-4-2"></div><div id="qb-4-2" style="display:none;opacity:0;transition:opacity .4s;"><div class="qq">&#x2753; Quelle est la meilleure facon de reequilibrer sans payer d'impots ?</div><div class="qopts"><div class="qopt" onclick="qa(this,'wrong','4-2')"><div class="qltr">A</div>Vendre ce qui est surpondere et racheter</div><div class="qopt" onclick="qa(this,'correct','4-2')"><div class="qltr">B</div>Rediriger les nouveaux versements vers la poche sous-ponderee</div><div class="qopt" onclick="qa(this,'wrong','4-2')"><div class="qltr">C</div>Tout vendre et recommencer</div></div><div class="qfb good" id="qfg-4-2">&#x2705; Rediriger les versements : aucune vente, aucun impot, aucun frais.</div><div class="qfb bad" id="qfb-4-2">&#x274C; La meilleure methode : rediriger les nouveaux versements. Zero impot.</div></div>
+  </div>
+  <div class="step-actions"><button class="btn btn-p" onclick="gA(4,3)">&larr; Retour</button><button class="btn btn-n disabled" id="bf-4" onclick="finCh(4)">Terminer le parcours &#x1F3C6; <span class="xpt">+50 XP</span></button></div>
+</div>
+<div class="act-block" id="ch4-comp"><div class="ch-comp"><span class="ch-comp-icon">&#x1F4CA;</span><h2>Chapitre 5 termine, <span class="pname"></span>&nbsp;!</h2><p class="ch-comp-sub">Suivi, reequilibrage, discipline &mdash; tu as tout le kit.</p><div class="ch-comp-xp">&#x26A1; <span id="xe4">0</span> XP gagnes</div><br><button class="btn-nch" onclick="showFinal()">&#x1F3C6; Voir mon badge &rarr;</button></div></div>
+</div>
+
+<!-- ECRAN FINAL -->
+<div class="ch-block" id="ch-final">
+<div class="final-screen">
+  <span class="badge-big" id="fBE">&#x1F3C6;</span>
+  <div class="badge-n" id="fBN">Badge</div>
+  <div class="badge-p" id="fBP"></div>
+  <div class="fxb"><div class="fxb-m"><span>0 XP</span><span id="fXT">0 / 1 675 XP</span></div><div class="fxb-t"><div class="fxb-f" id="fXF" style="width:0%;"></div></div></div>
+  <div class="f-total" id="fXTot">&#x26A1; 0 XP</div>
+  <div style="font-size:.86em;color:var(--muted);margin-bottom:24px;font-style:italic;" id="fName"></div>
+  <div class="f-cta">
+    <a class="f-btn p" href="https://docs.google.com/spreadsheets/d/13wvnUM4x7DAKHdlrPFcCPnfxwZ2p7uLKQOEBHcfLGN4/edit?usp=sharing" target="_blank">&#x1F4CA; Acceder a mon tableau de bord patrimonial</a>
+    <a class="f-btn s" href="learn.html">&#x1F4D6; Explorer le site en navigation libre</a>
+    <a class="f-btn t" href="index.html">&#x1F3E0; Retour a l'accueil</a>
+  </div>
+  <div style="font-size:.78em;font-weight:700;color:var(--navy);margin-bottom:16px;">&#x1F517; Les outils que j'utilise moi-meme</div>
+  <div class="pgrd">
+    <a class="pcard" href="https://bour.so/p/2VvNuveypCM" target="_blank" target="_blank"><span class="pem">&#x1F7E0;</span><div class="pnm">Boursorama</div><div class="pty">PEA &middot; CTO &middot; AV</div><div class="pav">Jusqu'a 130 &euro; offerts</div></a>
+    <a class="pcard" href="https://www.fortuneo.fr/compte-bancaire/souscrire/choix-type-compte" target="_blank" target="_blank"><span class="pem">&#x1F7E2;</span><div class="pnm">Fortuneo</div><div class="pty">PEA &middot; CTO</div><div class="pav">Jusqu'a 150 &euro; offerts</div></a>
+    <a class="pcard" href="https://refnocode.trade.re/141g7wv2" target="_blank" target="_blank"><span class="pem">&#x1F534;</span><div class="pnm">Trade Republic</div><div class="pty">CTO &middot; Crypto</div><div class="pav">10 &euro; en actions</div></a>
+    <a class="pcard" href="https://linxea.mention-me.com/m/ode/fa9se-e8564d2495" target="_blank" target="_blank"><span class="pem">&#x1F535;</span><div class="pnm">Linxea</div><div class="pty">AV &middot; PER</div><div class="pav">Frais reduits</div></a>
+    <a class="pcard" href="https://www.corum.fr/" target="_blank" target="_blank"><span class="pem">&#x1F7E3;</span><div class="pnm">CORUM</div><div class="pty">SCPI</div><div class="pav">Acces simplifie</div></a>
+    <a class="pcard" href="https://hellojoko.app.link/tyX38HoTyP" target="_blank" target="_blank"><span class="pem">&#x1F4B3;</span><div class="pnm">Joko</div><div class="pty">Cashback</div><div class="pav">5 &euro; offerts</div></a>
+  </div>
+  <div style="font-size:.72em;color:var(--muted);font-style:italic;margin-top:8px;" id="shareHint"></div>
+</div>
+</div>
+
+</div><!-- /container -->
+<footer style="text-align:center;padding:16px;font-size:.68em;color:var(--muted);border-top:1px solid var(--border);">&#x26A0;&#xFE0F; Document informatif et pedagogique &mdash; Ne constitue pas un conseil en investissement au sens reglementaire. &middot; Slash'Invest &middot; 2026</footer>
+
+<script>
+var name=sessionStorage.getItem('si_name')||'champion';
+var xp=parseInt(sessionStorage.getItem('si_xp')||'0');
+var curCh=0,curAct=0,chXpStart=xp;
+var simUsed=[false,false];
+var qDone={};
+var actDone={};
+var selProfil=null,selHz='moyen';
+var sc0=null,sc1=null;
+
+document.querySelectorAll('.pname').forEach(function(e){e.textContent=name;});
+document.getElementById('xpTotal').textContent=xp;
+
+var PALLOC={
+  'Defensif':{court:{ep:40,df:35,bo:15,ex:0,ip:10},moyen:{ep:30,df:35,bo:25,ex:0,ip:10},long:{ep:20,df:30,bo:35,ex:0,ip:15}},
+  'Equilibre':{court:{ep:25,df:25,bo:35,ex:5,ip:10},moyen:{ep:15,df:20,bo:50,ex:5,ip:10},long:{ep:10,df:15,bo:60,ex:5,ip:10}},
+  'Dynamique':{court:{ep:15,df:15,bo:55,ex:10,ip:5},moyen:{ep:10,df:10,bo:65,ex:10,ip:5},long:{ep:5,df:5,bo:70,ex:15,ip:5}},
+  'Offensif':{court:{ep:10,df:5,bo:65,ex:15,ip:5},moyen:{ep:5,df:5,bo:70,ex:15,ip:5},long:{ep:5,df:0,bo:70,ex:20,ip:5}}
+};
+
+var BADGES=[
+  {min:0,max:1350,e:'&#x1F3B0;',n:'Le Joueur de PMU',p:'Tu as parcouru le chemin. Quelques reponses ratees, quelques simulateurs skipes.
+La prochaine fois, tu sauras.'},
+  {min:1350,max:1475,e:'&#x2696;&#xFE0F;',n:'L'Equilibre Serieux',p:'Tu commences a y voir clair. Warren Buffett
+peut dormir tranquille, mais toi aussi bientot.'},
+  {min:1475,max:1600,e:'&#x1F9E0;',n:'Le Stratege',p:'Tu as une vision. Tu connais ton profil, ton horizon,
+tes objectifs. Tu investis comme TOI.'},
+  {min:1600,max:9999,e:'&#x1F680;',n:'Le Slash'Investor',p:'Tu as tout compris. Simple. Regulier. Long terme.
+Jeremy est fier de toi. &#x1F91D;'}
+];
+
+var ACT_LBLS=[
+  ['Inflation','Temps','Interets','Budget','Quiz'],
+  ['Enveloppe vs Support','Les enveloppes','Les supports','Les frais','Quiz'],
+  ['Horizon & Tolerance','Les 4 profils','DCA','Quiz'],
+  ['Budget','Erreurs','Plan 5 etapes','Score','Quiz'],
+  ['Suivi quotidien','L\'indicateur','Reequilibrer','Quand agir','Quiz final']
+];
+
+function addXP(n){
+  xp+=n; sessionStorage.setItem('si_xp',xp);
+  document.getElementById('xpTotal').textContent=xp;
+  document.getElementById('xpAmt').textContent=n;
+  var p=document.getElementById('xpPopup');
+  p.classList.add('show');
+  setTimeout(function(){p.classList.remove('show');},2000);
+}
+
+function gA(ch,act){
+  curAct=act;
+  var prefix='ch'+ch;
+  document.querySelectorAll('#ch-'+ch+' .act-block').forEach(function(a){a.classList.remove('active');});
+  var ids=[prefix+'-a0',prefix+'-a1',prefix+'-a2',prefix+'-a3',prefix+'-quiz'];
+  var target=act<ids.length?ids[act]:(prefix+'-a'+act);
+  var el=document.getElementById(target);
+  if(el)el.classList.add('active');
+  updNav(ch,act);
+  updProg(ch,act);
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(ch===0&&act===2)setTimeout(animBars,300);
+}
+
+function nxtA(ch,act,xpAmt){
+  var k=ch+'-'+act;
+  if(!actDone[k]){actDone[k]=true;addXP(xpAmt);}
+  gA(ch,act+1);
+}
+
+function stCh(ch){
+  var oldCm=document.getElementById('cm-'+curCh);
+  if(oldCm){oldCm.classList.remove('active');oldCm.classList.add('done');}
+  curCh=ch; curAct=0; chXpStart=xp;
+  document.querySelectorAll('.ch-block').forEach(function(c){c.classList.remove('active');});
+  document.getElementById('ch-'+ch).classList.add('active');
+  document.querySelectorAll('#ch-'+ch+' .act-block').forEach(function(a){a.classList.remove('active');});
+  var fa=document.getElementById('ch'+ch+'-a0');
+  if(fa)fa.classList.add('active');
+  var nc=document.getElementById('cm-'+ch);
+  if(nc)nc.classList.add('active');
+  updNav(ch,0); updProg(ch,0);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function updNav(ch,act){
+  var nav=document.getElementById('actsNav');
+  var lbls=ACT_LBLS[ch]||[];
+  nav.innerHTML=lbls.map(function(l,i){
+    var c='an-btn';
+    if(i<act)c+=' done';
+    else if(i===act)c+=' active';
+    return '<button class="'+c+'" onclick="gA('+ch+','+i+')">'+l+'</button>';
+  }).join('');
+}
+
+function updProg(ch,act){
+  var done=ch*5+act;
+  var pct=Math.round(done/25*100);
+  document.getElementById('progFill').style.width=pct+'%';
+  document.getElementById('progPct').textContent=pct+'%';
+  var lbl=(ACT_LBLS[ch]&&ACT_LBLS[ch][act])||'';
+  document.getElementById('progLabel').textContent='Ch.'+(ch+1)+' - '+lbl;
+}
+
+function animBars(){
+  document.querySelectorAll('#ch0-a2 .compo-fill').forEach(function(b){b.style.width=b.dataset.w+'%';});
+}
+
+function fmtK(n){
+  if(!n||isNaN(n))return '0';
+  if(n>=1e6)return (n/1e6).toFixed(1)+'M EUR';
+  if(n>=1000)return Math.round(n/1000)+'k EUR';
+  return Math.round(n)+' EUR';
+}
+
+function goQuiz(ch){
+  var k=ch+'-quiz-entry';
+  if(!actDone[k]){actDone[k]=true;addXP(50);}
+  document.querySelectorAll('#ch-'+ch+' .act-block').forEach(function(a){a.classList.remove('active');});
+  var q=document.getElementById('ch'+ch+'-quiz');
+  if(q)q.classList.add('active');
+  updNav(ch,4);
+  updProg(ch,4);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function cS0(){
+  var m=parseFloat(document.getElementById('s0m').value)||0;
+  var r=parseFloat(document.getElementById('s0r').value)||0;
+  var y=parseFloat(document.getElementById('s0d').value)||0;
+  var rate=r/100/12,n=y*12;
+  var tot=rate>0?m*(Math.pow(1+rate,n)-1)/rate:m*n;
+  var v=m*n,g=tot-v;
+  document.getElementById('s0v').textContent=fmtK(v);
+  document.getElementById('s0g').textContent=fmtK(g);
+  document.getElementById('s0t').textContent=fmtK(tot);
+  var ctx=document.getElementById('cs0').getContext('2d');
+  if(sc0)sc0.destroy();
+  sc0=new Chart(ctx,{type:'doughnut',data:{labels:['Versements','Interets composes'],datasets:[{data:[Math.max(0,v),Math.max(0,g)],backgroundColor:['#bfdbfe','#a7f3d0'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{position:'bottom',labels:{font:{family:'Space Grotesk',size:10},padding:8,boxWidth:10}}}}});
+}
+
+function cS1(){
+  var c=parseFloat(document.getElementById('s1c').value)||0;
+  var r=parseFloat(document.getElementById('s1r').value)||0;
+  var f=parseFloat(document.getElementById('s1f').value)||0;
+  var y=parseFloat(document.getElementById('s1d').value)||0;
+  var sans=c*Math.pow(1+r/100,y);
+  var avec=c*Math.pow(1+(r-f)/100,y);
+  var perte=sans-avec;
+  document.getElementById('s1sans').textContent=fmtK(sans);
+  document.getElementById('s1avec').textContent=fmtK(avec);
+  document.getElementById('s1perte').textContent=fmtK(perte);
+  var ctx=document.getElementById('cs1').getContext('2d');
+  if(sc1)sc1.destroy();
+  sc1=new Chart(ctx,{type:'bar',data:{labels:['Sans frais','Avec frais'],datasets:[{data:[Math.max(0,sans),Math.max(0,avec)],backgroundColor:['#a7f3d0','#fca5a5'],borderRadius:8,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{grid:{color:'#f1f5f9'},ticks:{font:{family:'Space Grotesk',size:10},callback:function(v){return fmtK(v);}}}}}});
+}
+
+function uS(id,idx){
+  if(simUsed[idx])return;
+  simUsed[idx]=true;
+  document.getElementById(id).textContent='Simulation validee !';
+  document.getElementById(id).classList.add('used');
+  addXP(25);
+}
+
+function selP(el,p){
+  document.querySelectorAll('.pc').forEach(function(c){c.classList.remove('sel');});
+  el.classList.add('sel');
+  selProfil=p;
+  document.getElementById('hsel').style.display='block';
+  showAlloc();
+}
+
+function selH(h,btn){
+  selHz=h;
+  document.querySelectorAll('.hb').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  showAlloc();
+}
+
+function showAlloc(){
+  if(!selProfil)return;
+  var a=PALLOC[selProfil][selHz];
+  document.getElementById('abox').classList.add('show');
+  var bl={court:'Court terme',moyen:'Moyen terme',long:'Long terme'};
+  document.getElementById('atitle').textContent=selProfil+' - '+bl[selHz];
+  function sB(id,pct){document.getElementById('af-'+id).style.width=pct+'%';document.getElementById('ap-'+id).textContent=pct+'%';}
+  sB('ep',a.ep);sB('df',a.df);sB('bo',a.bo);sB('ex',a.ex);sB('ip',a.ip);
+}
+
+var SC_V=[
+  {max:3,c:'fb-low',m:'Les bases sont a poser - budget, matelas, puis premiers investissements.'},
+  {max:6,c:'fb-mid',m:'Tu as les fondations. Il reste des etapes cles pour optimiser.'},
+  {max:9,c:'fb-g',m:'Solide ! Tu as une vraie structure. Quelques ajustements peuvent encore tout changer.'},
+  {max:11,c:'fb-t',m:'Excellent profil ! Tu maitrises les fondamentaux.'},
+  {max:13,c:'fb-t',m:'Score parfait ! Tu es dans le top des investisseurs particuliers !'}
+];
+
+function tSc(el){
+  el.classList.toggle('checked');
+  el.querySelector('.scbox').textContent=el.classList.contains('checked')?'V':'';
+  var n=document.querySelectorAll('.scitem.checked').length;
+  var pct=Math.round(n/13*100);
+  document.getElementById('scN').textContent=n;
+  document.getElementById('scB').style.width=pct+'%';
+  document.getElementById('scV').textContent=n+' / 13 - '+pct+'%';
+  var v=SC_V.find(function(x){return n<=x.max;})||SC_V[SC_V.length-1];
+  var fb=document.getElementById('scFb');
+  fb.className='scfb show '+v.c;
+  fb.textContent=v.m;
+}
+
+function qa(el,result,key){
+  var parts=key.split('-'),ch=parts[0],q=parts[1];
+  if(qDone[key])return;
+  qDone[key]=true;
+  el.parentElement.querySelectorAll('.qopt').forEach(function(o){o.classList.add('disabled');});
+  el.classList.add(result);
+  var ok=result==='correct';
+  var fg=document.getElementById('qfg-'+key);
+  var fb=document.getElementById('qfb-'+key);
+  if(fg)fg.classList[ok?'add':'remove']('show');
+  if(fb)fb.classList[ok?'remove':'add']('show');
+  if(ok)addXP(25);
+  var dot=document.getElementById('qd-'+key);
+  if(dot){dot.classList.remove('active');dot.classList.add('done');}
+  var nq=parseInt(q)+1;
+  var nkey=ch+'-'+nq;
+  setTimeout(function(){
+    var sep=document.getElementById('qs-'+nkey);
+    var blk=document.getElementById('qb-'+nkey);
+    var ndot=document.getElementById('qd-'+nkey);
+    if(blk){
+      if(sep)sep.style.display='block';
+      blk.style.display='block';
+      setTimeout(function(){blk.style.opacity='1';},50);
+      if(ndot)ndot.classList.add('active');
+      blk.scrollIntoView({behavior:'smooth',block:'nearest'});
+    } else {
+      var btn=document.getElementById('bf-'+ch);
+      if(btn){btn.classList.remove('disabled');btn.scrollIntoView({behavior:'smooth',block:'nearest'});}
+    }
+  },900);
+}
+
+function finCh(ch){
+  var k='fin-'+ch;
+  if(!actDone[k]){actDone[k]=true;addXP(50);}
+  var earned=xp-chXpStart;
+  var el=document.getElementById('xe'+ch);
+  if(el)el.textContent=earned;
+  chXpStart=xp;
+  document.querySelectorAll('#ch-'+ch+' .act-block').forEach(function(a){a.classList.remove('active');});
+  var comp=document.getElementById('ch'+ch+'-comp');
+  if(comp)comp.classList.add('active');
+  updNav(ch,999);
+  document.getElementById('progFill').style.width=((ch+1)/5*100)+'%';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function showFinal(){
+  document.querySelectorAll('.ch-block').forEach(function(c){c.classList.remove('active');});
+  document.getElementById('ch-final').classList.add('active');
+  document.querySelectorAll('.cm-item').forEach(function(c){c.classList.remove('active');c.classList.add('done');});
+  document.getElementById('actsNav').innerHTML='';
+  var badge=BADGES.find(function(b){return xp>=b.min&&xp<b.max;})||BADGES[BADGES.length-1];
+  document.getElementById('fBE').innerHTML=badge.e;
+  document.getElementById('fBN').textContent=badge.n;
+  document.getElementById('fBP').textContent=badge.p;
+  document.getElementById('fName').textContent=name+' - '+xp+' XP';
+  document.getElementById('fXT').textContent=xp+' / 1 675 XP';
+  document.getElementById('fXTot').textContent='XP : '+xp;
+  setTimeout(function(){document.getElementById('fXF').style.width=Math.min(100,Math.round(xp/1675*100))+'%';},400);
+  document.getElementById('shareHint').textContent='Badge "'+badge.n+'" sur Slash\'Invest avec '+xp+' XP !';
+  document.getElementById('progFill').style.width='100%';
+  document.getElementById('progPct').textContent='100%';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+cS0(); cS1();
+updNav(0,0); updProg(0,0);
+</script>
+</body>
+</html>
