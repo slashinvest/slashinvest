@@ -24,6 +24,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .gp-track{height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
 .gp-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--blue),var(--green));transition:width .5s cubic-bezier(.4,0,.2,1);width:0%;}
 .gh-xp{display:flex;align-items:center;gap:5px;background:var(--blue-lt);border:1px solid #bfdbfe;border-radius:20px;padding:4px 11px;font-family:var(--mono);font-size:.72em;font-weight:700;color:var(--blue);white-space:nowrap;}
+.gh-btn{display:flex;align-items:center;gap:5px;background:var(--green-lt);border:1px solid #a7f3d0;border-radius:20px;padding:4px 11px;font-family:var(--mono);font-size:.68em;font-weight:700;color:#065f46;white-space:nowrap;text-decoration:none;transition:all .18s;}
+.gh-btn:hover{background:#a7f3d0;}
 .xp-popup{position:fixed;top:66px;right:18px;z-index:300;background:white;border:2px solid var(--green);border-radius:12px;padding:9px 16px;font-family:var(--mono);font-weight:700;color:var(--green);font-size:.86em;display:flex;align-items:center;gap:7px;transform:translateY(-8px);opacity:0;transition:all .3s cubic-bezier(.4,0,.2,1);pointer-events:none;box-shadow:0 6px 20px rgba(16,185,129,.18);}
 .xp-popup.show{transform:translateY(0);opacity:1;}
 .ch-map{background:linear-gradient(135deg,var(--navy),var(--navy2));padding:14px 20px;display:flex;align-items:center;justify-content:center;gap:0;overflow-x:auto;}
@@ -228,9 +230,10 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 </head>
 <body>
 <div class="xp-popup" id="xpPopup">&#x26A1; +<span id="xpAmt">0</span> XP</div>
-<div class="game-header">
+<div class="game-header" style="grid-template-columns:auto 1fr auto auto;">
   <a href="index.html" class="gh-logo"><div class="gh-dot"></div>SLASH'INVEST</a>
   <div class="gh-prog"><div class="gp-meta"><span id="progLabel">Ch.1 Acte 1</span><span id="progPct">0%</span></div><div class="gp-track"><div class="gp-fill" id="progFill" style="width:0%"></div></div></div>
+  <a href="https://docs.google.com/spreadsheets/d/13wvnUM4x7DAKHdlrPFcCPnfxwZ2p7uLKQOEBHcfLGN4/edit?usp=sharing" target="_blank" class="gh-btn">📊 Tableau de bord</a>
   <div class="gh-xp">&#x26A1; <span id="xpTotal">0</span> XP</div>
 </div>
 <div class="ch-map">
@@ -617,7 +620,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
   </div>
   <div style="font-size:.78em;font-weight:700;color:var(--navy);margin-bottom:16px;">&#x1F517; Les outils que j'utilise moi-meme</div>
   <div class="pgrd">
-    <a class="pcard" href="https://bour.so/p/wCVguC53SFB" target="_blank" target="_blank"><span class="pem">&#x1F7E0;</span><div class="pnm">Boursorama</div><div class="pty">PEA &middot; CTO &middot; AV</div><div class="pav">Jusqu'a 130 &euro; offerts</div></a>
+    <a class="pcard" href="https://bour.so/p/2VvNuveypCM" target="_blank" target="_blank"><span class="pem">&#x1F7E0;</span><div class="pnm">Boursorama</div><div class="pty">PEA &middot; CTO &middot; AV</div><div class="pav">Jusqu'a 130 &euro; offerts</div></a>
     <a class="pcard" href="https://www.fortuneo.fr/compte-bancaire/souscrire/choix-type-compte" target="_blank" target="_blank"><span class="pem">&#x1F7E2;</span><div class="pnm">Fortuneo</div><div class="pty">PEA &middot; CTO</div><div class="pav">Jusqu'a 150 &euro; offerts</div></a>
     <a class="pcard" href="https://refnocode.trade.re/141g7wv2" target="_blank" target="_blank"><span class="pem">&#x1F534;</span><div class="pnm">Trade Republic</div><div class="pty">CTO &middot; Crypto</div><div class="pav">10 &euro; en actions</div></a>
     <a class="pcard" href="https://linxea.mention-me.com/m/ode/fa9se-e8564d2495" target="_blank" target="_blank"><span class="pem">&#x1F535;</span><div class="pnm">Linxea</div><div class="pty">AV &middot; PER</div><div class="pav">Frais reduits</div></a>
