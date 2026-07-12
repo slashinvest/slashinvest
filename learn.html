@@ -252,7 +252,7 @@ footer{text-align:center;padding:20px;font-size:.7em;color:var(--muted);border-t
 <div class="tab-nav">
   <button class="tab-btn active" onclick="showTab('pourquoi')">📉 Pourquoi investir</button>
   <button class="tab-btn" onclick="showTab('ou')">🧭 Où investir</button>
-  <button class="tab-btn" onclick="showTab('strategie')">♟️ Stratégie</button>
+  <button class="tab-btn" onclick="showTab('stratégie')">♟️ Stratégie</button>
   <button class="tab-btn" onclick="showTab('action')">🔥 À l'action</button>
   <button class="tab-btn" onclick="showTab('suivre')">📊 Suivre</button>
   <button class="tab-btn special" onclick="showTab('simulateurs')">🧮 Simulateurs</button>
@@ -351,7 +351,7 @@ footer{text-align:center;padding:20px;font-size:.7em;color:var(--muted);border-t
     </div>
     <div class="env-card">
       <div class="env-name"><span class="env-tag" style="background:#fef3c7;color:#92400e;">🌍</span> CTO</div>
-      <div class="env-desc">Compte-Titres Ordinaire. Aucune limite de versement, accès à tous les marchés mondiaux.</div>
+      <div class="env-desc">Compte-Titrès Ordinaire. Aucune limite de versement, accès à tous les marchés mondiaux.</div>
       <div class="env-avantage">✅ Aucun plafond · Tous marchés · Très flexible</div><br>
       <div class="env-limite">⚠️ Fiscalité pleine (PFU 30 %) · À utiliser après PEA plein</div>
     </div>
@@ -387,7 +387,7 @@ footer{text-align:center;padding:20px;font-size:.7em;color:var(--muted);border-t
 </div>
 
 <!-- ════ ONGLET 3 — STRATÉGIE ════ -->
-<div class="tab-content" id="tab-strategie">
+<div class="tab-content" id="tab-stratégie">
   <div class="page-title">
     <div class="pt-eyebrow">Chapitre 3</div>
     <div class="pt-h1">Ma stratégie</div>
@@ -497,7 +497,7 @@ footer{text-align:center;padding:20px;font-size:.7em;color:var(--muted);border-t
         <span style="font-size:1.1em;flex-shrink:0;">🏦</span><div><strong style="color:var(--navy);">Payer des frais excessifs.</strong> <span style="color:var(--muted);">2 % de frais annuels sur 30 ans = patrimoine divisé par 2. Chaque fraction compte.</span></div>
       </div>
       <div style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:var(--bg);border-radius:9px;border:1px solid var(--border);font-size:.82em;">
-        <span style="font-size:1.1em;flex-shrink:0;">🔀</span><div><strong style="color:var(--navy);">Sur-diversifier.</strong> <span style="color:var(--muted);">30 lignes ne protègent pas plus que 5. Un ETF World couvre déjà 1 500 entreprises.</span></div>
+        <span style="font-size:1.1em;flex-shrink:0;">🔀</span><div><strong style="color:var(--navy);">Sur-diversifiér.</strong> <span style="color:var(--muted);">30 lignes ne protègent pas plus que 5. Un ETF World couvre déjà 1 500 entreprises.</span></div>
       </div>
       <div style="display:flex;gap:10px;align-items:flex-start;padding:10px 12px;background:var(--bg);border-radius:9px;border:1px solid var(--border);font-size:.82em;">
         <span style="font-size:1.1em;flex-shrink:0;">👀</span><div><strong style="color:var(--navy);">Regarder son portefeuille tous les jours.</strong> <span style="color:var(--muted);">Plus on regarde, plus on est tenté d'agir. La passivité est une stratégie.</span></div>
@@ -596,7 +596,7 @@ footer{text-align:center;padding:20px;font-size:.7em;color:var(--muted);border-t
         <div style="display:flex;flex-direction:column;gap:6px;font-size:.78em;color:var(--muted);">
           <div>• Le marché a baissé de 10 %</div>
           <div>• Un ami a vendu ses ETF</div>
-          <div>• Tu as lu un article alarmiste</div>
+          <div>• Tu as lu un articlé alarmiste</div>
           <div>• Tu "sens" que ça va baisser</div>
         </div>
       </div>
@@ -613,13 +613,14 @@ footer{text-align:center;padding:20px;font-size:.7em;color:var(--muted);border-t
   <div class="page-title">
     <div class="pt-eyebrow">Outils</div>
     <div class="pt-h1">Simulateurs interactifs</div>
-    <div class="pt-desc">Calcule ta situation personnelle. Ajuste les paramètres en temps réel.</div>
+    <div class="pt-desc">Calcule ta situation personnelle. Ajuste les paramètrès en temps réel.</div>
   </div>
 
   <div class="sim-tabs">
     <button class="sim-tab active" onclick="showSim('compo')">✨ Intérêts composés</button>
     <button class="sim-tab" onclick="showSim('frais')">⚠️ Impact des frais</button>
     <button class="sim-tab" onclick="showSim('objectif')">🎯 Mon objectif mensuel</button>
+    <button class="sim-tab" onclick="showSim('rente')">🏖️ Ma rente</button>
   </div>
 
   <!-- SIM 1 — INTÉRÊTS COMPOSÉS -->
@@ -630,7 +631,7 @@ footer{text-align:center;padding:20px;font-size:.7em;color:var(--muted);border-t
         <div class="sim-inputs">
           <div class="sim-field"><div class="sim-lbl">Versement mensuel</div><input type="number" class="sim-input" id="c1-mens" value="200" oninput="calcCompo()"></div>
           <div class="sim-field"><div class="sim-lbl">Rendement annuel %</div><input type="number" class="sim-input" id="c1-rend" value="7" step="0.5" oninput="calcCompo()"></div>
-          <div class="sim-field"><div class="sim-lbl">Durée (années)</div><input type="number" class="sim-input" id="c1-duree" value="20" oninput="calcCompo()"></div>
+          <div class="sim-field"><div class="sim-lbl">Durée (années)</div><input type="number" class="sim-input" id="c1-durée" value="20" oninput="calcCompo()"></div>
         </div>
         <div class="sim-result">
           <div class="sim-kpi"><div class="sim-kpi-val" id="c1-verse">—</div><div class="sim-kpi-lbl">Total versé</div></div>
@@ -652,7 +653,7 @@ footer{text-align:center;padding:20px;font-size:.7em;color:var(--muted);border-t
           <div class="sim-field"><div class="sim-lbl">Rendement brut %</div><input type="number" class="sim-input" id="f1-rend" value="8" step="0.5" oninput="calcFrais()"></div>
           <div class="sim-field"><div class="sim-lbl">Frais annuels %</div><input type="number" class="sim-input" id="f1-frais" value="2" step="0.1" oninput="calcFrais()"></div>
         </div>
-        <div style="margin-bottom:10px;font-size:.76em;color:var(--muted);">Durée : <input type="number" class="sim-input" id="f1-duree" value="30" style="width:60px;display:inline-block;padding:4px 8px;" oninput="calcFrais()"> ans</div>
+        <div style="margin-bottom:10px;font-size:.76em;color:var(--muted);">Durée : <input type="number" class="sim-input" id="f1-durée" value="30" style="width:60px;display:inline-block;padding:4px 8px;" oninput="calcFrais()"> ans</div>
         <div class="sim-result">
           <div class="sim-kpi"><div class="sim-kpi-val" id="f1-sans" style="color:var(--green);">—</div><div class="sim-kpi-lbl">Sans frais</div></div>
           <div class="sim-kpi"><div class="sim-kpi-val" id="f1-avec" style="color:var(--red);">—</div><div class="sim-kpi-lbl">Avec frais</div></div>
@@ -671,7 +672,7 @@ footer{text-align:center;padding:20px;font-size:.7em;color:var(--muted);border-t
         <div class="sim-inputs">
           <div class="sim-field"><div class="sim-lbl">Objectif capital (€)</div><input type="number" class="sim-input" id="o1-obj" value="100000" oninput="calcObjectif()"></div>
           <div class="sim-field"><div class="sim-lbl">Rendement annuel %</div><input type="number" class="sim-input" id="o1-rend" value="7" step="0.5" oninput="calcObjectif()"></div>
-          <div class="sim-field"><div class="sim-lbl">Durée (années)</div><input type="number" class="sim-input" id="o1-duree" value="20" oninput="calcObjectif()"></div>
+          <div class="sim-field"><div class="sim-lbl">Durée (années)</div><input type="number" class="sim-input" id="o1-durée" value="20" oninput="calcObjectif()"></div>
         </div>
         <div style="text-align:center;padding:24px;background:white;border-radius:12px;border:1px solid var(--border);">
           <div style="font-size:.72em;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;">Versement mensuel nécessaire</div>
@@ -682,8 +683,39 @@ footer{text-align:center;padding:20px;font-size:.7em;color:var(--muted);border-t
     </div>
   </div>
 
-</div>
+  <!-- SIM 4 — RENTE -->
+  <div class="sim-panel" id="sim-rente">
+    <div class="card">
+      <div class="card-title">&#x1F3D6;&#xFE0F; Ma rente &#x2014; Combien me faut-il ?</div>
+      <p style="font-size:.8em;color:var(--muted);margin-bottom:16px;line-height:1.6;">Tu veux X euros/mois de rente dans Y ans. Quel capital te faut-il ? Et combien investir chaque mois pour y arriver ?</p>
+      <div class="sim-box">
+        <div class="sim-inputs" style="grid-template-columns:1fr 1fr;">
+          <div class="sim-field"><div class="sim-lbl">Rente souhaitée (euros/mois)</div><input type="number" class="sim-input" id="r1-rente" value="1000" oninput="calcRente()"></div>
+          <div class="sim-field"><div class="sim-lbl">Horizon (années)</div><input type="number" class="sim-input" id="r1-horizon" value="18" oninput="calcRente()"></div>
+          <div class="sim-field"><div class="sim-lbl">Rendement annuel %</div><input type="number" class="sim-input" id="r1-rend" value="7" step="0.5" oninput="calcRente()"></div>
+          <div class="sim-field"><div class="sim-lbl">Patrimoine financier actuel (euros)</div><input type="number" class="sim-input" id="r1-patrimoine" value="0" placeholder="0 si aucun" oninput="calcRente()"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+          <div style="background:white;border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center;">
+            <div style="font-size:.62em;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Capital nécessaire</div>
+            <div style="font-size:1.6em;font-weight:800;color:var(--navy);" id="r1-capital">--</div>
+            <div style="font-size:.68em;color:var(--muted);margin-top:4px;">Règle des 4% - retrait annuel sécurisé</div>
+          </div>
+          <div style="background:linear-gradient(135deg,var(--blue-lt),var(--green-lt));border:1px solid #bfdbfe;border-radius:10px;padding:16px;text-align:center;">
+            <div style="font-size:.62em;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">À investir chaque mois</div>
+            <div style="font-size:1.6em;font-weight:800;color:var(--blue);" id="r1-mensuel">--</div>
+            <div style="font-size:.68em;color:var(--muted);margin-top:4px;" id="r1-detail"></div>
+          </div>
+        </div>
+        <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:12px 14px;font-size:.78em;color:#92400e;line-height:1.6;margin-bottom:14px;">
+          &#x1F4A1; <strong>La règle des 4%</strong> : un portefeuille bien diversifié peut fournir une rente annuelle de 4% du capital indéfiniment sans l'entamer. C'est la base de la liberté financière.
+        </div>
+        <div style="height:180px;"><canvas id="chart-rente"></canvas></div>
+      </div>
+    </div>
+  </div>
 
+</div>
 <!-- ════ ONGLET 7 — PARRAINAGE & RDV ════ -->
 <div class="tab-content" id="tab-rdv">
   <div class="page-title">
@@ -694,7 +726,7 @@ footer{text-align:center;padding:20px;font-size:.7em;color:var(--muted);border-t
 
   <div class="section-label">🏦 Enveloppes & Courtiers</div>
   <div class="parrain-grid">
-    <a class="parrain-card" href="https://bour.so/p/2VvNuveypCM" target="_blank">
+    <a class="parrain-card" href="https://bour.so/p/xFZHokWQgnR" target="_blank">
       <span class="parrain-emoji">🟠</span>
       <div class="parrain-name">Boursorama</div>
       <div class="parrain-type">Banque en ligne · PEA · CTO · AV</div>
@@ -822,7 +854,7 @@ var chartCompo=null, chartFrais=null;
 function calcCompo(){
   var m=parseFloat(document.getElementById('c1-mens').value)||0;
   var r=parseFloat(document.getElementById('c1-rend').value)||0;
-  var y=parseFloat(document.getElementById('c1-duree').value)||0;
+  var y=parseFloat(document.getElementById('c1-durée').value)||0;
   var rate=r/100/12, n=y*12;
   var total=rate>0?m*(Math.pow(1+rate,n)-1)/rate:m*n;
   var verse=m*n, gains=total-verse;
@@ -838,7 +870,7 @@ function calcFrais(){
   var cap=parseFloat(document.getElementById('f1-cap').value)||0;
   var r=parseFloat(document.getElementById('f1-rend').value)||0;
   var f=parseFloat(document.getElementById('f1-frais').value)||0;
-  var y=parseFloat(document.getElementById('f1-duree').value)||0;
+  var y=parseFloat(document.getElementById('f1-durée').value)||0;
   var sans=cap*Math.pow(1+r/100,y);
   var avec=cap*Math.pow(1+(r-f)/100,y);
   var perte=sans-avec;
@@ -853,15 +885,81 @@ function calcFrais(){
 function calcObjectif(){
   var obj=parseFloat(document.getElementById('o1-obj').value)||0;
   var r=parseFloat(document.getElementById('o1-rend').value)||0;
-  var y=parseFloat(document.getElementById('o1-duree').value)||0;
+  var y=parseFloat(document.getElementById('o1-durée').value)||0;
   var rate=r/100/12, n=y*12;
   var m=rate>0?obj*rate/(Math.pow(1+rate,n)-1):obj/n;
   document.getElementById('o1-result').textContent=Math.ceil(m)+' €/mois';
   document.getElementById('o1-detail').textContent='Soit '+fmtK(Math.ceil(m)*n)+' versés au total pour atteindre '+fmtK(obj);
 }
 
+
+function calcRente(){
+  if(!document.getElementById('r1-rente')) return;
+  var rente = parseFloat(document.getElementById('r1-rente').value) || 0;
+  var horizon = parseFloat(document.getElementById('r1-horizon').value) || 0;
+  var r = parseFloat(document.getElementById('r1-rend').value) || 0;
+  var patrimoine = parseFloat(document.getElementById('r1-patrimoine').value) || 0;
+
+  // Capital nécessaire via règle des 4%
+  var capitalNécessaire = rente * 12 / 0.04;
+
+  // Ce que vaut le patrimoine àctuel dans X ans
+  var rate = r / 100 / 12;
+  var n = horizon * 12;
+  var patrimoineCapitalisé = patrimoine * Math.pow(1 + rate, n);
+
+  // Capital restant à constituer via versements mensuels
+  var capitalRestant = Math.max(0, capitalNécessaire - patrimoineCapitalisé);
+
+  // Versement mensuel pour atteindre le capital restant
+  var mensuel = capitalRestant <= 0 ? 0
+    : rate > 0
+      ? capitalRestant * rate / (Math.pow(1 + rate, n) - 1)
+      : capitalRestant / n;
+
+  document.getElementById('r1-capital').textContent = fmtK(capitalNécessaire);
+  document.getElementById('r1-mensuel').textContent = mensuel <= 0
+    ? 'Objectif déjà atteint !'
+    : Math.ceil(mensuel) + ' €/mois';
+  document.getElementById('r1-detail').innerHTML = patrimoine > 0
+    ? 'dont ' + fmtK(patrimoineCapitalisé) + ' issus de ton patrimoine àctuel'
+    : 'pendant <strong>' + horizon + ' ans</strong> à ' + r + '%/an';
+
+  // Graphique donut : patrimoine capitalisé vs versements vs intérêts
+  var totalVerse = mensuel <= 0 ? 0 : Math.ceil(mensuel) * n;
+  var intérêts = capitalNécessaire - totalVerse - Math.min(patrimoineCapitalisé, capitalNécessaire);
+  var ctx = document.getElementById('chart-rente').getContext('2d');
+  if(window.chartRente) window.chartRente.destroy();
+  var patrimoineCapitaliséCapped = Math.min(patrimoineCapitalisé, capitalNécessaire);
+  var hasPatrimoine = patrimoine > 0 && patrimoineCapitaliséCapped > 0;
+  window.chartRente = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: hasPatrimoine
+        ? ['Patrimoine actuel capitalisé', 'Versements mensuels', 'Intérêts sur versements']
+        : ['Versements mensuels', 'Intérêts composés'],
+      datasets: [{
+        data: hasPatrimoine
+          ? [Math.max(0, patrimoineCapitaliséCapped), Math.max(0, totalVerse), Math.max(0, intérêts)]
+          : [Math.max(0, totalVerse), Math.max(0, intérêts)],
+        backgroundColor: hasPatrimoine
+          ? ['#fde68a', '#bfdbfe', '#a7f3d0']
+          : ['#bfdbfe', '#a7f3d0'],
+        borderWidth: 2, borderColor: '#fff'
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, cutout: '60%',
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { family: 'Space Grotesk', size: 11 }, padding: 10, boxWidth: 12 } },
+        tooltip: { callbacks: { label: function(c) { return ' ' + c.label + ' : ' + fmtK(c.parsed); } } }
+      }
+    }
+  });
+}
+
 // ── INIT ──
-calcCompo(); calcFrais(); calcObjectif();
+calcCompo(); calcFrais(); calcObjectif(); calcRente();
 </script>
 </body>
 </html>
