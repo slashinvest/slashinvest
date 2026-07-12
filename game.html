@@ -22,7 +22,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .gh-prog{display:flex;flex-direction:column;gap:3px;}
 .gp-meta{display:flex;justify-content:space-between;font-size:.6em;color:var(--muted);font-family:var(--mono);}
 .gp-track{height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
-.gp-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--blue),var(--green));transition:width .5s cubic-bezier(.4,0,.2,1);}
+.gp-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--blue),var(--green));transition:width .5s cubic-bezier(.4,0,.2,1);width:0%;}
 .gh-xp{display:flex;align-items:center;gap:5px;background:var(--blue-lt);border:1px solid #bfdbfe;border-radius:20px;padding:4px 11px;font-family:var(--mono);font-size:.72em;font-weight:700;color:var(--blue);white-space:nowrap;}
 .xp-popup{position:fixed;top:66px;right:18px;z-index:300;background:white;border:2px solid var(--green);border-radius:12px;padding:9px 16px;font-family:var(--mono);font-weight:700;color:var(--green);font-size:.86em;display:flex;align-items:center;gap:7px;transform:translateY(-8px);opacity:0;transition:all .3s cubic-bezier(.4,0,.2,1);pointer-events:none;box-shadow:0 6px 20px rgba(16,185,129,.18);}
 .xp-popup.show{transform:translateY(0);opacity:1;}
@@ -230,7 +230,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 <div class="xp-popup" id="xpPopup">&#x26A1; +<span id="xpAmt">0</span> XP</div>
 <div class="game-header">
   <a href="index.html" class="gh-logo"><div class="gh-dot"></div>SLASH'INVEST</a>
-  <div class="gh-prog"><div class="gp-meta"><span id="progLabel">Ch.1 Acte 1</span><span id="progPct">0%</span></div><div class="gp-track"><div class="gp-fill" id="progFill"></div></div></div>
+  <div class="gh-prog"><div class="gp-meta"><span id="progLabel">Ch.1 Acte 1</span><span id="progPct">0%</span></div><div class="gp-track"><div class="gp-fill" id="progFill" style="width:0%"></div></div></div>
   <div class="gh-xp">&#x26A1; <span id="xpTotal">0</span> XP</div>
 </div>
 <div class="ch-map">
@@ -259,7 +259,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
     <div class="lecon"><div class="lecon-l">&#x1F511; La lecon</div><div class="lecon-t">Ne rien faire est un choix &mdash; souvent le pire. <strong>Epargner ne suffit pas. Il faut investir.</strong></div></div>
   </div>
   <div class="tline tl-g">&#x2726; Tu sais pourquoi l'inaction coute cher. Mais combien coute vraiment l'attente ? Rencontre Sarah et Thomas &rarr;</div>
-  <div class="step-actions"><button class="btn btn-p disabled">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(0,0,50)">Acte suivant <span class="xpt">+50 XP</span> &rarr;</button></div>
+  <div class="step-actions"><button class="btn btn-p disabled">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(0,0,50)">Continuer <span class="xpt">+50 XP</span> &rarr;</button></div>
 </div>
 <div class="act-block" id="ch0-a1">
   <div class="step-intro"><div class="step-num">02</div><div><div class="step-title">Le temps est ta seule vraie richesse</div><div class="step-desc">Deux personnes, meme effort mensuel, resultats radicalement differents. La seule variable : quand elles ont commence.</div></div></div>
@@ -273,7 +273,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
     <div class="lecon"><div class="lecon-l">&#x1F511; La lecon</div><div class="lecon-t"><strong>Commencer aujourd'hui avec 50 &euro; vaut mieux qu'attendre d'avoir 200 &euro;.</strong></div></div>
   </div>
   <div class="tline tl-p">&#x2726; Mais comment 100 &euro;/mois deviennent 175 000 &euro; ? La reponse tient en deux mots &rarr;</div>
-  <div class="step-actions"><button class="btn btn-p" onclick="gA(0,0)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(0,1,50)">Acte suivant <span class="xpt">+50 XP</span> &rarr;</button></div>
+  <div class="step-actions"><button class="btn btn-p" onclick="gA(0,0)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(0,1,50)">Continuer <span class="xpt">+50 XP</span> &rarr;</button></div>
 </div>
 <div class="act-block" id="ch0-a2">
   <div class="step-intro"><div class="step-num">03</div><div><div class="step-title">La magie des interets composes</div><div class="step-desc">100 &euro;/mois pendant 30 ans. Ce qui change tout ? Le rendement.</div></div></div>
@@ -298,7 +298,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
     </div>
   </div>
   <div class="tline tl-a">&#x2726; Tu vois le potentiel. Maintenant : combien peux-tu vraiment investir ? &rarr;</div>
-  <div class="step-actions"><button class="btn btn-p" onclick="gA(0,1)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(0,2,50)">Acte suivant <span class="xpt">+50 XP</span> &rarr;</button></div>
+  <div class="step-actions"><button class="btn btn-p" onclick="gA(0,1)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(0,2,50)">Continuer <span class="xpt">+50 XP</span> &rarr;</button></div>
 </div>
 <div class="act-block" id="ch0-a3">
   <div class="step-intro"><div class="step-num">04</div><div><div class="step-title">Ton budget avant tout</div><div class="step-desc">Avant d'investir le premier euro : connaitre ses chiffres. Sans ca, aucune strategie ne tient.</div></div></div>
@@ -321,7 +321,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
     <div class="lecon"><div class="lecon-l">&#x1F511; La lecon</div><div class="lecon-t">Avant d'investir : <strong>3 a 6 mois de depenses sur livret accessible</strong>. C'est ta base. Pas ton investissement.</div></div>
   </div>
   <div class="tline tl-b">&#x2726; Tu as les bases. Valide tes acquis avec le quiz &rarr;</div>
-  <div class="step-actions"><button class="btn btn-p" onclick="gA(0,2)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(0,3,50)">Quiz <span class="xpt">+50 XP</span> &rarr;</button></div>
+  <div class="step-actions"><button class="btn btn-p" onclick="gA(0,2)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(0,3,50)">Quiz du chapitre <span class="xpt">+50 XP</span> &rarr;</button></div>
 </div>
 <div class="act-block" id="ch0-quiz">
   <div class="step-intro"><div class="step-num">05</div><div><div class="step-title">Quiz &mdash; Chapitre 1</div><div class="step-desc">3 questions. Bonne reponse = +25 XP.</div></div></div>
@@ -353,7 +353,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
     <div class="lecon"><div class="lecon-l">&#x1F511; La lecon</div><div class="lecon-t"><strong>La boite prime sur le contenu.</strong> Mettre un bon support dans une mauvaise enveloppe peut couter des milliers d'euros d'impots inutiles.</div></div>
   </div>
   <div class="tline tl-b">&#x2726; Decouvrons les 4 enveloppes fiscales a connaitre &rarr;</div>
-  <div class="step-actions"><button class="btn btn-p disabled">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(1,0,50)">Acte suivant <span class="xpt">+50 XP</span> &rarr;</button></div>
+  <div class="step-actions"><button class="btn btn-p disabled">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(1,0,50)">Continuer <span class="xpt">+50 XP</span> &rarr;</button></div>
 </div>
 <div class="act-block" id="ch1-a1">
   <div class="step-intro"><div class="step-num">02</div><div><div class="step-title">Les 4 enveloppes fiscales</div><div class="step-desc">PEA &middot; Assurance-Vie &middot; PER &middot; CTO &mdash; chacune a ses regles, avantages et limites.</div></div></div>
@@ -367,7 +367,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
     <div class="lecon"><div class="lecon-l">&#x1F511; La strategie type</div><div class="lecon-t">PEA en priorite &rarr; AV pour prendre date tot &rarr; PER si TMI &ge; 30% &rarr; CTO quand PEA plein.</div></div>
   </div>
   <div class="tline tl-g">&#x2726; Tu connais les boites. Qu'est-ce qu'on met dedans ? &rarr;</div>
-  <div class="step-actions"><button class="btn btn-p" onclick="gA(1,0)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(1,1,50)">Acte suivant <span class="xpt">+50 XP</span> &rarr;</button></div>
+  <div class="step-actions"><button class="btn btn-p" onclick="gA(1,0)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(1,1,50)">Continuer <span class="xpt">+50 XP</span> &rarr;</button></div>
 </div>
 <div class="act-block" id="ch1-a2">
   <div class="step-intro"><div class="step-num">03</div><div><div class="step-title">Les supports d'investissement</div><div class="step-desc">Du plus defensif au plus offensif &mdash; chaque support a son couple rendement/risque.</div></div></div>
@@ -382,7 +382,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
     <div class="lecon"><div class="lecon-l">&#x1F511; La lecon</div><div class="lecon-t">Le bon support n'existe pas &mdash; il y a le bon support pour toi, a ce moment de ta vie. <strong>Un profil prudent a 2 ans de la retraite n'investit pas comme un profil dynamique a 25 ans.</strong></div></div>
   </div>
   <div class="tline tl-a">&#x2726; Et si quelques % de frais suffisaient a tout ruiner ? &rarr;</div>
-  <div class="step-actions"><button class="btn btn-p" onclick="gA(1,1)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(1,2,50)">Acte suivant <span class="xpt">+50 XP</span> &rarr;</button></div>
+  <div class="step-actions"><button class="btn btn-p" onclick="gA(1,1)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(1,2,50)">Continuer <span class="xpt">+50 XP</span> &rarr;</button></div>
 </div>
 <div class="act-block" id="ch1-a3">
   <div class="step-intro"><div class="step-num">04</div><div><div class="step-title">L'impact devastateur des frais</div><div class="step-desc">2% de frais annuels. Ca parait peu. Sur 30 ans, ca divise ton patrimoine par deux.</div></div></div>
@@ -398,7 +398,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
     <div class="lecon" style="margin-top:14px;"><div class="lecon-l">&#x1F511; La regle d'or</div><div class="lecon-t">ETF &lt; 0,3%/an. Courtiers sans frais de garde. <strong>Chaque fraction de % compte sur le long terme.</strong></div></div>
   </div>
   <div class="tline tl-p">&#x2726; Tu sais ou investir. Comment construire ta strategie personnelle ? &rarr;</div>
-  <div class="step-actions"><button class="btn btn-p" onclick="gA(1,2)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(1,3,50)">Quiz <span class="xpt">+50 XP</span> &rarr;</button></div>
+  <div class="step-actions"><button class="btn btn-p" onclick="gA(1,2)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(1,3,50)">Quiz du chapitre <span class="xpt">+50 XP</span> &rarr;</button></div>
 </div>
 <div class="act-block" id="ch1-quiz">
   <div class="step-intro"><div class="step-num">05</div><div><div class="step-title">Quiz &mdash; Chapitre 2</div><div class="step-desc">3 questions sur les enveloppes et les supports.</div></div></div>
@@ -426,7 +426,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
     <div class="lecon"><div class="lecon-l">&#x1F511; La lecon</div><div class="lecon-t"><strong>L'horizon prime sur la tolerance.</strong> On n'investit pas en bourse de l'argent dont on aura besoin dans 2 ans.</div></div>
   </div>
   <div class="tline tl-b">&#x2726; Decouvre les 4 profils et ton allocation recommandee &rarr;</div>
-  <div class="step-actions"><button class="btn btn-p disabled">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(2,0,50)">Acte suivant <span class="xpt">+50 XP</span> &rarr;</button></div>
+  <div class="step-actions"><button class="btn btn-p disabled">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(2,0,50)">Continuer <span class="xpt">+50 XP</span> &rarr;</button></div>
 </div>
 <div class="act-block" id="ch2-a1">
   <div class="step-intro"><div class="step-num">02</div><div><div class="step-title">Les 4 profils investisseurs</div><div class="step-desc">Clique sur ton profil et selectionne ton horizon pour voir ton allocation recommandee.</div></div></div>
@@ -437,7 +437,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
     <div class="abox" id="abox"><div class="atitle" id="atitle">Allocation recommandee</div><div class="arow"><div class="albl">Epargne</div><div class="atrack"><div class="afill" id="af-ep" style="background:#0891b2;"></div></div><div class="apct" id="ap-ep" style="color:#0891b2;"></div></div><div class="arow"><div class="albl">Defensif</div><div class="atrack"><div class="afill" id="af-df" style="background:var(--green);"></div></div><div class="apct" id="ap-df" style="color:var(--green);"></div></div><div class="arow"><div class="albl">Bourse</div><div class="atrack"><div class="afill" id="af-bo" style="background:var(--blue);"></div></div><div class="apct" id="ap-bo" style="color:var(--blue);"></div></div><div class="arow"><div class="albl">Exotique</div><div class="atrack"><div class="afill" id="af-ex" style="background:var(--amber);"></div></div><div class="apct" id="ap-ex" style="color:var(--amber);"></div></div><div class="arow"><div class="albl">Immo Papier</div><div class="atrack"><div class="afill" id="af-ip" style="background:var(--purple);"></div></div><div class="apct" id="ap-ip" style="color:var(--purple);"></div></div></div>
   </div>
   <div class="tline tl-g">&#x2726; Tu sais qui tu es. Comment investir regulierement sans y penser ? &rarr;</div>
-  <div class="step-actions"><button class="btn btn-p" onclick="gA(2,0)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(2,1,50)">Acte suivant <span class="xpt">+50 XP</span> &rarr;</button></div>
+  <div class="step-actions"><button class="btn btn-p" onclick="gA(2,0)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(2,1,50)">Continuer <span class="xpt">+50 XP</span> &rarr;</button></div>
 </div>
 <div class="act-block" id="ch2-a2">
   <div class="step-intro"><div class="step-num">03</div><div><div class="step-title">Le DCA &mdash; la discipline qui bat le genie</div><div class="step-desc">Investir une somme fixe chaque mois, quoi qu'il arrive. Simple. Puissant. Redoutablement efficace.</div></div></div>
@@ -450,7 +450,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
     <div class="lecon"><div class="lecon-l">&#x1F511; La lecon</div><div class="lecon-t">Un virement automatique le 1er du mois. C'est tout. <strong>Le meilleur investisseur est celui qui ne regarde pas.</strong></div></div>
   </div>
   <div class="tline tl-a">&#x2726; Tu as une strategie. Comment passer a l'action concretement ? &rarr;</div>
-  <div class="step-actions"><button class="btn btn-p" onclick="gA(2,1)">&larr; Retour</button><button class="btn btn-n" onclick="goQuiz(2)">Quiz <span class="xpt">+50 XP</span> &rarr;</button></div>
+  <div class="step-actions"><button class="btn btn-p" onclick="gA(2,1)">&larr; Retour</button><button class="btn btn-n" onclick="goQuiz(2)">Quiz du chapitre <span class="xpt">+50 XP</span> &rarr;</button></div>
 </div>
 <div class="act-block" id="ch2-quiz">
   <div class="step-intro"><div class="step-num">04</div><div><div class="step-title">Quiz &mdash; Chapitre 3</div><div class="step-desc">3 questions sur les profils et la strategie.</div></div></div>
@@ -476,7 +476,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
     <div class="lecon"><div class="lecon-l">&#x1F511; La lecon</div><div class="lecon-t">Revenus &minus; fixes &minus; variables = <strong>capacite d'epargne reelle</strong>. Si ce chiffre est flou, aucune strategie ne tient.</div></div>
   </div>
   <div class="tline tl-r">&#x2726; Avant d'agir, voici les 6 erreurs qui coutent le plus cher &rarr;</div>
-  <div class="step-actions"><button class="btn btn-p disabled">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(3,0,50)">Acte suivant <span class="xpt">+50 XP</span> &rarr;</button></div>
+  <div class="step-actions"><button class="btn btn-p disabled">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(3,0,50)">Continuer <span class="xpt">+50 XP</span> &rarr;</button></div>
 </div>
 <div class="act-block" id="ch3-a1">
   <div class="step-intro"><div class="step-num">02</div><div><div class="step-title">Les 6 erreurs qui coutent le plus cher</div><div class="step-desc">Apprendre des erreurs des autres est gratuit. En faire les siennes ne l'est pas.</div></div></div>
@@ -491,7 +491,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
     </div>
   </div>
   <div class="tline tl-b">&#x2726; Tu connais les pieges. Voici le plan concret en 5 etapes &rarr;</div>
-  <div class="step-actions"><button class="btn btn-p" onclick="gA(3,0)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(3,1,50)">Acte suivant <span class="xpt">+50 XP</span> &rarr;</button></div>
+  <div class="step-actions"><button class="btn btn-p" onclick="gA(3,0)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(3,1,50)">Continuer <span class="xpt">+50 XP</span> &rarr;</button></div>
 </div>
 <div class="act-block" id="ch3-a2">
   <div class="step-intro"><div class="step-num">03</div><div><div class="step-title">Le plan concret en 5 etapes</div><div class="step-desc">Simple. Regulier. Long terme. Dans cet ordre exact.</div></div></div>
@@ -505,7 +505,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
     </div>
   </div>
   <div class="tline tl-p">&#x2726; Ou en es-tu vraiment ? Evalue ton score investisseur &rarr;</div>
-  <div class="step-actions"><button class="btn btn-p" onclick="gA(3,1)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(3,2,50)">Acte suivant <span class="xpt">+50 XP</span> &rarr;</button></div>
+  <div class="step-actions"><button class="btn btn-p" onclick="gA(3,1)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(3,2,50)">Continuer <span class="xpt">+50 XP</span> &rarr;</button></div>
 </div>
 <div class="act-block" id="ch3-a3">
   <div class="step-intro"><div class="step-num">04</div><div><div class="step-title">Mon Score Investisseur</div><div class="step-desc">13 cases. Coche ce que tu as deja. Decouvre ou tu en es vraiment.</div></div></div>
@@ -520,7 +520,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
     <div class="scfb" id="scFb"></div>
   </div>
   <div class="tline tl-b">&#x2726; Valide tes acquis avec le quiz &rarr;</div>
-  <div class="step-actions"><button class="btn btn-p" onclick="gA(3,2)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(3,3,50)">Quiz <span class="xpt">+50 XP</span> &rarr;</button></div>
+  <div class="step-actions"><button class="btn btn-p" onclick="gA(3,2)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(3,3,50)">Quiz du chapitre <span class="xpt">+50 XP</span> &rarr;</button></div>
 </div>
 <div class="act-block" id="ch3-quiz">
   <div class="step-intro"><div class="step-num">05</div><div><div class="step-title">Quiz &mdash; Chapitre 4</div><div class="step-desc">3 questions sur le budget et le passage a l'action.</div></div></div>
@@ -547,7 +547,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
     <div class="lecon"><div class="lecon-l">&#x1F511; La lecon</div><div class="lecon-t">Une revue par an. Pas plus. <strong>Le meilleur investisseur est celui qui oublie qu'il a un portefeuille.</strong></div></div>
   </div>
   <div class="tline tl-b">&#x2726; Mais lors de cette revue, qu'est-ce qu'on regarde vraiment ? &rarr;</div>
-  <div class="step-actions"><button class="btn btn-p disabled">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(4,0,50)">Acte suivant <span class="xpt">+50 XP</span> &rarr;</button></div>
+  <div class="step-actions"><button class="btn btn-p disabled">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(4,0,50)">Continuer <span class="xpt">+50 XP</span> &rarr;</button></div>
 </div>
 <div class="act-block" id="ch4-a1">
   <div class="step-intro"><div class="step-num">02</div><div><div class="step-title">L'indicateur qui compte vraiment</div><div class="step-desc">Pas la performance. L'ecart entre ton allocation reelle et ta cible.</div></div></div>
@@ -561,7 +561,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
     </div>
   </div>
   <div class="tline tl-g">&#x2726; Comment reequilibrer sans payer trop d'impots ? &rarr;</div>
-  <div class="step-actions"><button class="btn btn-p" onclick="gA(4,0)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(4,1,50)">Acte suivant <span class="xpt">+50 XP</span> &rarr;</button></div>
+  <div class="step-actions"><button class="btn btn-p" onclick="gA(4,0)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(4,1,50)">Continuer <span class="xpt">+50 XP</span> &rarr;</button></div>
 </div>
 <div class="act-block" id="ch4-a2">
   <div class="step-intro"><div class="step-num">03</div><div><div class="step-title">Reequilibrer intelligemment</div><div class="step-desc">Reequilibrer ne veut pas dire vendre. Il y a des facons bien plus intelligentes.</div></div></div>
@@ -574,7 +574,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
     <div class="lecon"><div class="lecon-l">&#x1F511; La lecon</div><div class="lecon-t">Reequilibrer par les versements coute zero en frais et impots. <strong>C'est toujours la premiere chose a essayer.</strong></div></div>
   </div>
   <div class="tline tl-p">&#x2726; Derniere lecon : quand agir et surtout quand ne pas agir &rarr;</div>
-  <div class="step-actions"><button class="btn btn-p" onclick="gA(4,1)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(4,2,50)">Acte suivant <span class="xpt">+50 XP</span> &rarr;</button></div>
+  <div class="step-actions"><button class="btn btn-p" onclick="gA(4,1)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(4,2,50)">Continuer <span class="xpt">+50 XP</span> &rarr;</button></div>
 </div>
 <div class="act-block" id="ch4-a3">
   <div class="step-intro"><div class="step-num">04</div><div><div class="step-title">Quand agir &mdash; et quand resister</div><div class="step-desc">La plupart des erreurs viennent d'agir trop souvent, pas trop peu.</div></div></div>
@@ -586,7 +586,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
     <div class="lecon"><div class="lecon-l">&#x1F511; La lecon finale</div><div class="lecon-t"><strong>La passivite est une strategie.</strong> Tu es maintenant mieux arme que 95% des investisseurs particuliers. Il ne reste qu'a passer a l'action.</div></div>
   </div>
   <div class="tline tl-a">&#x2726; Dernier quiz &mdash; puis ton badge t'attend &rarr;</div>
-  <div class="step-actions"><button class="btn btn-p" onclick="gA(4,2)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(4,3,50)">Quiz final <span class="xpt">+50 XP</span> &rarr;</button></div>
+  <div class="step-actions"><button class="btn btn-p" onclick="gA(4,2)">&larr; Retour</button><button class="btn btn-n" onclick="nxtA(4,3,50)">Quiz du chapitre <span class="xpt">+50 XP</span> &rarr;</button></div>
 </div>
 <div class="act-block" id="ch4-quiz">
   <div class="step-intro"><div class="step-num">05</div><div><div class="step-title">Quiz &mdash; Chapitre 5</div><div class="step-desc">3 dernieres questions avant ton badge !</div></div></div>
@@ -631,6 +631,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 </div><!-- /container -->
 <footer style="text-align:center;padding:16px;font-size:.68em;color:var(--muted);border-top:1px solid var(--border);">&#x26A0;&#xFE0F; Document informatif et pedagogique &mdash; Ne constitue pas un conseil en investissement au sens reglementaire. &middot; Slash'Invest &middot; 2026</footer>
 
+
 <script>
 var name=sessionStorage.getItem('si_name')||'champion';
 var xp=parseInt(sessionStorage.getItem('si_xp')||'0');
@@ -652,14 +653,10 @@ var PALLOC={
 };
 
 var BADGES=[
-  {min:0,max:1350,e:'&#x1F3B0;',n:'Le Joueur de PMU',p:'Tu as parcouru le chemin. Quelques reponses ratees, quelques simulateurs skipes.
-La prochaine fois, tu sauras.'},
-  {min:1350,max:1475,e:'&#x2696;&#xFE0F;',n:'L'Equilibre Serieux',p:'Tu commences a y voir clair. Warren Buffett
-peut dormir tranquille, mais toi aussi bientot.'},
-  {min:1475,max:1600,e:'&#x1F9E0;',n:'Le Stratege',p:'Tu as une vision. Tu connais ton profil, ton horizon,
-tes objectifs. Tu investis comme TOI.'},
-  {min:1600,max:9999,e:'&#x1F680;',n:'Le Slash'Investor',p:'Tu as tout compris. Simple. Regulier. Long terme.
-Jeremy est fier de toi. &#x1F91D;'}
+  {min:0,max:1350,e:'🎰',n:'Le Joueur de PMU',p:'Tu as parcouru le chemin. Quelques reponses ratees, quelques simulateurs skipes. La prochaine fois, tu sauras.'},
+  {min:1350,max:1475,e:'⚖️',n:'L\'Equilibre Serieux',p:'Tu commences a y voir clair. Warren Buffett peut dormir tranquille, mais toi aussi bientot.'},
+  {min:1475,max:1600,e:'🧠',n:'Le Stratege',p:'Tu as une vision. Tu connais ton profil, ton horizon, tes objectifs. Tu investis comme TOI.'},
+  {min:1600,max:9999,e:'🚀',n:'Le Slash\'Investor',p:'Tu as tout compris. Simple. Regulier. Long terme. Jeremy est fier de toi. 🤝'}
 ];
 
 var ACT_LBLS=[
