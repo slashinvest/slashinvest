@@ -269,8 +269,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
   <div class="card">
     <div class="ctitle">&#x23F3; Sarah vs Thomas &mdash; Le duel</div>
     <div class="duel">
-      <div class="dc win"><div class="dtag">&#x2705; Sarah &mdash; démarre tot</div><div class="dname">Investit à 25 ans puis s'arrête à 35 ans</div><div class="ddet">Investit pendant <strong>10 ans</strong><br>100 &euro;/mois pendant <strong>10 ans</strong><br>S'arrété à 35 ans<br>Total verse : <strong>12 000 &euro;</strong></div><div class="dres">~175 000 &euro;</div><div class="dnote">à 65 ans &middot; 8%/an</div></div>
-      <div class="dc lose"><div class="dtag">&#x26A0;&#xFE0F; Thomas &mdash; démarre tard</div><div class="dname">Investit à 35 ans jusqu'à ses 65 ans</div><div class="ddet">Investit pendant <strong>30 ans</strong><br>100 &euro;/mois pendant <strong>30 ans</strong><br>Total verse : <strong>36 000 &euro;</strong></div><div class="dres">~150 000 &euro;</div><div class="dnote">à 65 ans &middot; 8%/an</div></div>
+      <div class="dc win"><div class="dtag">&#x2705; Sarah &mdash; démarre tot</div><div class="dname">Investit à 25 ans puis s'arrête à 35 ans</div><div class="ddet">Investit pendant <strong>10 ans</strong><br>100 &euro;/mois pendant <strong>10 ans</strong>Total versé : <strong>12 000 &euro;</strong></div><div class="dres">~175 000 &euro;</div><div class="dnote">à 65 ans &middot; 8%/an</div></div>
+      <div class="dc lose"><div class="dtag">&#x26A0;&#xFE0F; Thomas &mdash; démarre tard</div><div class="dname">Investit à 35 ans jusqu'à ses 65 ans</div><div class="ddet">Investit pendant <strong>30 ans</strong><br>100 &euro;/mois pendant <strong>30 ans</strong><br>Total versé : <strong>36 000 &euro;</strong></div><div class="dres">~150 000 &euro;</div><div class="dnote">à 65 ans &middot; 8%/an</div></div>
     </div>
     <div class="alert al-g">&#x1F3C6; Sarah verse 3x moins et finit avec plus d'argent. Chaque année perdue ne se rattrape pas.</div>
     <div class="lecon"><div class="lecon-l">&#x1F511; La lecon</div><div class="lecon-t"><strong>Commencer aujourd'hui avec 50 &euro; vaut mieux qu'attendre d'avoir 200 &euro;.</strong></div></div>
@@ -295,7 +295,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
     <div class="ctitle">&#x1F9EE; Simulateur &mdash; Et pour toi ?</div>
     <div class="sim-box">
       <div class="sim-inp"><div class="sf"><div class="sl">Versement mensuel</div><input type="number" class="si" id="s0m" value="200" oninput="cS0()"></div><div class="sf"><div class="sl">Rendement %/an</div><input type="number" class="si" id="s0r" value="7" step="0.5" oninput="cS0()"></div><div class="sf"><div class="sl">Durée (années)</div><input type="number" class="si" id="s0d" value="20" oninput="cS0()"></div></div>
-      <div class="sim-res"><div class="sk"><div class="skv" id="s0v">—</div><div class="skl">Verse total</div></div><div class="sk"><div class="skv" id="s0g" style="color:var(--green);">—</div><div class="skl">Intérêts</div></div><div class="sk"><div class="skv" id="s0t" style="color:var(--blue);">—</div><div class="skl">Capital final</div></div></div>
+      <div class="sim-res"><div class="sk"><div class="skv" id="s0v">—</div><div class="skl">Versement total</div></div><div class="sk"><div class="skv" id="s0g" style="color:var(--green);">—</div><div class="skl">Intérêts</div></div><div class="sk"><div class="skv" id="s0t" style="color:var(--blue);">—</div><div class="skl">Capital final</div></div></div>
       <div class="sch"><canvas id="cs0"></canvas></div>
       <button class="sxbtn" id="sb0" onclick="uS('sb0',0)">&#x26A1; Valider ma simulation (+25 XP bonus)</button>
     </div>
